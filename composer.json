@@ -1,0 +1,15 @@
+{
+    "name": "msi/ticket-master",
+    "authors": [
+        {
+            "name": "Taha karami"
+        }
+    ],
+    "autoload":{
+        "classmap":["inc/"]
+    },
+    "require": {
+        "morilog/jalali": "3.4.2",
+        "kavenegar/php": "^1.2"
+    }
+}

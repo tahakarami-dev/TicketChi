@@ -1,0 +1,869 @@
+
+.sub-page{
+    font-family: 'Vazir';
+
+}
+#note-ticket{
+    margin-top: 1em;
+    height: 100px;
+    margin-bottom: 10px !important;
+}
+.submit-note{
+    width: 100%;
+    padding: 10px;
+    background-color: #2A48CD;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 30px;
+    margin-top: 5px;
+}
+
+.tkt-departments select {
+    width: 100%;
+}
+.tkt-departments input {
+    width: 100%;
+}
+.submit{
+    width: 60px;
+}
+.department-answerabel{
+    width: 100%;
+}
+.tkm-priority-high{
+    background-color: red;
+    color: white;
+    padding: 6px;
+    border-radius: 4px;
+
+}
+.tkm-priority-low{
+   background-color:  green;
+   color: white;
+   padding: 6px;
+   border-radius: 4px;
+
+}
+.tkm-priority-medium{
+     background-color:orange;
+     color: white;
+     padding: 6px;
+     border-radius: 4px;
+
+}
+.box_priority{
+    margin-top: 10px;
+}
+
+
+
+/* admin send ticket  */
+
+
+
+.container {
+    display: flex;
+    width: 800px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 60px;
+    margin-right: 400px;
+}
+
+.sidebar {
+    width: 30%;
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.options {
+    margin-bottom: 20px;
+}
+
+.options input[type="checkbox"] {
+    margin-left: 10px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+input[type="text"],
+select,
+input[type="file"],
+input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #fafafa;
+    color: #333;
+}
+
+select {
+    background-color: #fff;
+}
+
+input[type="file"],
+input[type="date"] {
+    padding: 3px;
+}
+
+
+
+.submit-btn:hover {
+    background-color: #0080ff8e;
+}
+
+.main-content {
+    width: 70%;
+    padding: 20px;
+}
+
+.container h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+
+.tkm-container {
+    width: 50%;
+    margin: 0 auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.tkm-header {
+    margin-bottom: 10px;
+}
+
+textarea {
+    width: 100%;
+    height: 50px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    resize: none;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.tkm-attachment-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+input[type="file"] {
+    margin-right: 10px;
+}
+
+.tkm-file-view-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.tkm-file-view-section input[type="text"] {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+
+
+
+
+/* استایل بخش محتوای پایه */
+.tkm-base-content {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.tkm-user-section {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.tkm-content-section {
+    margin-bottom: 10px;
+}
+
+.tkm-date-section {
+    margin-bottom: 10px;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.pic-widget{
+    width: 130px;
+
+}
+.widget{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    height:150px;
+
+    
+}
+
+.all_tickets{
+    text-decoration: none;
+    color: #000000;
+}
+.btn-new-ticket{
+    background-color:#2A48CD ;
+    color: white;
+    border-radius: 50px;
+    padding: 10px;
+    text-decoration:none
+}
+.btn-new-ticket:hover{
+    color: white;
+}.head-page{
+    display: flex;
+    align-items: start;
+
+}
+.btn_add_new_tickets{
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.status-list{
+    padding: 6px;
+    display: inline-block;
+    border-radius:4px;
+    color: white;
+    margin-top: 5px;
+}
+#tkm_priority_box{
+margin-top:40px;
+}
+
+/* style settings */
+.csf-header-inner{
+    background: #2a48cd !important ;
+    font-family: 'Vazir';
+
+    
+     
+}
+.csf-header-inner h1{
+    color: white !important;
+    font-family: 'Vazir';
+
+}
+
+.csf-footer{
+    background: #2a48cd !important ;
+    font-family: 'Vazir';
+
+}
+.csf-active{
+    font-family: 'Vazir';
+
+}
+.csf-tab-item{
+    font-family: 'Vazir';
+
+}
+.csf-wrapper{
+    font-family: 'Vazir';
+
+}
+
+/* department style */
+.department-form{
+    font-family: 'Vazir';
+}
+.department-form{
+    margin-top: 20px;
+}
+.main-container{
+    display: flex;
+    margin-top: 30px;
+}
+.department-form input , select, textarea{
+    width: 400px;
+}
+.department-form label{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.department-form textarea{
+    height: 100px;
+}
+.head-title{
+    font-family: 'Vazir';
+    font-weight: bold;
+    font-size: 18px;
+
+
+}
+.btn-submit-department{
+    background-color: #0056b3;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: 0px;
+    margin-top: 15px;
+    
+
+
+}
+.right_container{
+    margin-left: 20px;
+}
+.department_table{
+    font-family: 'Vazir';
+    margin-top: 20px;
+
+}
+.main-edit-container{
+    margin-top: 30px;
+
+}
+.left_container{
+    margin-left: 20px;
+}
+.btn-sec{
+    margin-bottom: 20px;
+}
+
+/* new ticket style */
+
+.reply_voice{
+    width: 300px;
+    margin-right: -15px;
+}
+
+
+.form-ticket-left{
+    display: flex;
+    border-radius:16px ;
+    margin-bottom: 12px;
+    margin-top: 40px;
+
+}
+
+.left-form{
+    background-color: rgb(255, 255, 255);
+    width: 650px;
+    padding: 0px 15px;
+    border-radius: 16px 0px 0px 16px;
+    
+}
+.right-form{
+    background-color: #ffffffad;
+    width: 250px;
+    border-radius: 0px 16px 16px 0px;
+
+}
+.title-form{
+    text-align: center;
+    font-size: 22px;
+}
+.right-title{
+    text-align: center;
+    font-size: 20px;
+}
+.sec_one_right{
+    margin-right: 18px;
+    margin-top: 39px;
+    margin-left: 18px;
+
+}
+.department-radio{
+    font-size: 16px;
+    font-weight: 600;
+}
+.father_department{
+    font-weight: 500;
+    font-size: 15px;
+}
+.alert-send{
+    display: flex;
+    flex-wrap: wrap-reverse;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: start;
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+.alert_title{
+    margin-right: 5px;
+    font-weight:600;
+}
+.edit_date{
+margin-top: 20px;
+display: flex;
+flex-direction: column;
+}
+.date_title{
+    font-size: 16px;
+    font-weight: 600;
+}
+.edit-date{
+    text-decoration: none;
+    margin-top: 14px;
+    margin-bottom: 7px;
+    color: #0056b3;
+}
+.edit-date:hover{
+    color: #0056b3;
+}
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color:#2A48CD;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 30px;
+}
+.lable_form{
+    margin-bottom: 8px;
+    margin-top: 10px;
+}
+.view_profile_link{
+    text-decoration: none;
+    color: white;
+    background-color:#2947cc ;
+    padding: 9px;
+    border-radius: 7px;
+    margin-right: 5px;
+}
+.view_profile_link:hover{
+    color: white;
+}
+.user_view{
+    margin-right: 5px;
+}
+.proprties{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row-reverse;
+    margin-bottom: 25px;
+    margin-top: 15px;
+}
+.audio_controls{
+    width: 70%;
+}
+.reply_container{
+    margin: 20px;
+    border-radius: 16px;
+    background-color: white;
+    padding:20px 20px 20px 20px ;
+    margin-bottom: 30px;
+}
+.save_message{
+    margin-right: 5px;
+}
+.wpeditor_textarea{
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+.reply_title{
+    margin-bottom: 30px;
+}
+.attechment_ticket{
+    margin-top: 15px;
+}
+.tab_header{
+    border-radius: 16px ;
+    border: 1px solid #d3d3d367;
+    padding:20px 20px 20px 20px ;
+    margin-top: 15px;
+}
+.message_content{
+font-size: 16px;
+font-weight: 500;
+}
+.tkm_user_avatar{
+    width:60px;
+    margin-left:10px;
+    margin-top: -20px;
+    border-radius: 32px;
+}
+.edit_btn_reply{
+    color: white;
+    background-color:#2947cc ;
+    padding: 7px;
+    border-radius: 7px;
+    border: 0;
+    margin: 10px 0px;
+}
+.edit_reply_file{
+    margin-top: 10px ;
+}
+.view_link_file_reply{
+    text-decoration: none;
+    background-color:#2947cc ;
+    padding: 7px;
+    border-radius: 7px;
+    border: 0;
+    color: white;
+}
+.view_link_file_reply:hover{
+    color: white;
+}
+.link_edit_filebox{
+    margin-right: 5px;
+}
+.edit_file_box{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.infobox_reply{
+    display: flex;
+    align-items: center;
+    margin-bottom: -5px;
+}
+.username_reply{
+    margin-right: 13px;
+    display: flex;
+}
+.main-container-admin-ticket{
+    display: flex;
+    justify-content: center;
+}
+#wpfooter{
+    display: none;
+}
+.box-editor{
+    margin-bottom: 10px;
+}
+/* other style */
+
+.filter_link{
+    font-weight: 400;
+}
+.container_filter{
+    margin-bottom: 15px;
+}
+/* alert messgae */
+
+.message_alert{
+    padding: 10px;
+}
+
+.alert_message_success{
+    background-color: white;
+    border-right: 4px green solid;
+    margin: 10px;
+    
+}
+.alert_message_error{
+    background-color: white;
+    border-right: 4px rgb(196, 23, 0) solid;
+    margin: 10px;
+}
+.alert_message_danger{
+    background-color: white;
+    border-right: 4px rgb(224, 146, 0) solid;
+    margin: 10px;
+}
+.back_link:focus{
+border: none !important;
+border: 0px !important;
+}
+
+.user_searchP{
+      padding: 0px 8px 0px 24px !important;
+}
+.search_result{
+margin-top: 11px;
+}
+#publish{
+    margin-bottom: 15px !important;
+}
+.filter_button{
+    width: 50px !important;
+    margin-top: 7px !important;
+}
+.left-form{
+    overflow: hidden !important;
+}
+
+
+@media only screen and (max-width:768px){
+    #filter1{
+        margin-bottom: 10px;
+    }
+  
+    
+    .main-container{
+        flex-direction: column-reverse;
+
+    }
+    .right_container{
+        overflow: hidden !important;
+    }
+    .department_input{
+        width: 100% !important;
+    }
+    .right_container{
+        margin-top: 30px;
+        margin: 15px;
+        overflow: hidden;
+    }
+    .left_container{
+        margin: 15px;
+    }
+    .save_message{
+        width: 100%;
+    }
+    .input_form{
+        width: 100%;
+    }
+    .user_input{
+        width: 50% !important;
+        padding: 5px 8px 5px 24px;
+    }
+    .form-ticket-left{
+        flex-direction: column-reverse;
+    }
+    .left-form{
+        width: 350px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+
+    }
+    .right-form{
+        width: 350px ;
+        padding: 0px 15px ;
+        padding-bottom: 15px ;
+        border-radius: 16px;
+
+    }
+    .one-sec-form{
+        padding-bottom: 15px;
+    }
+    #filter2{
+    margin-bottom: 10px !important;
+    width: 270px;
+    }
+  
+    .form-ticket-left{
+    width: 90% !important;
+    }
+    .container_filter{
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        overflow: hidden !important;
+    }
+    .container_filter select{
+        width: 100% !important;
+    }
+
+    #ticket-creator{
+        width: 100%;
+    }
+    .title_page_tickets{
+        margin-left: 4px;
+    }
+    .filter_ticket{
+        padding: 5px 8px 5px 24px;
+        width: 100%;
+    }
+    .filter_box{
+        margin-top: 0px !important;
+    }
+    .button{
+        margin-top: 5px;
+    }
+    .filter_search{
+        margin-bottom: 5px;
+        width: 100%;
+    }
+    .main_filter{
+        width: 100% !important;
+    }
+    .main-edit-container{
+        overflow: hidden !important;
+    }
+    .user_view{
+        margin-top: 5px;
+
+    }
+    
+  
+ 
+}
+
+/* analysis */
+.dashboard-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 100px;
+
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 90%;
+    padding-bottom: 10px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 150px;
+    max-width: 200px;
+    background: #2947cc;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.stat-card h2 {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.stat-card p {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* واکنش‌گرایی */
+@media (max-width: 900px) {
+    .stats {
+        justify-content: flex-start;
+        display: flex;
+        padding-bottom: 10px;
+    }
+   
+    }
+
+    .table-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.ticket-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ticket-table th, .ticket-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.ticket-table th {
+    background-color: #2947cc;
+    color: #fff;
+    font-size: 16px;
+}
+
+.ticket-table td {
+    font-size: 14px;
+}
+
+.status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.status.pending {
+    background-color: #f4a261;
+    color: white;
+}
+
+.status.solved {
+    background-color: #2a9d8f;
+    color: white;
+}
+
+.ticket-table tr:last-child td {
+    border-bottom: none;
+}
+
+.ticket-table tr:hover {
+    background-color: #f1f1f1;
+}
+@media only screen and (max-width:768px){
+    .stats{
+        flex-direction: column;
+    }
+    .dashboard-container h1{
+        line-height: 38px;
+        text-align: center;
+    }
+    .table-container{
+        padding: 5px;
+    }
+    .stat-card{
+        max-width: 500px;
+    }
+    .table-container{
+        margin-top: -50px;
+    }
+}
