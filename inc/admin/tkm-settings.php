@@ -121,7 +121,7 @@ if (class_exists('CSF')) {
 
             'output'=>array(
               'background-color'=>'new-ticket-btn:hover, #tkm-filter-btn:hover, .btn-eye:hover, .btn_show_tickets:hover, .custom-file-upload:hover, .tkm-submit-ticket:hover, .byn_send_reply:hover, .submit-reply:hover, .file_upload_reply:hover, .btn_send_voice:hover,.divider hr',
-               'border-color'=>'.response-item-chat',
+               'border-color'=>'.response-item-chat,.item-reply-ticket,.response-item-chat',
                'color'=>'.link-title:hover,.back_link:hover'
             ),
             'output_important'=> true,
