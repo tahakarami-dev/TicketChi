@@ -171,7 +171,8 @@ $is_shortcode = tkm_settings('shortcode');
                       <label for="file-upload" s class="attachment-file" style="margin: 0;"> <?php echo tkm_settings('file_label') ?  tkm_settings('file_label') : 'آپلود فایل ' ?>
                         <img width="18px" style="height: 18px;" src="<?php echo TKM_FRONT_ASSETS . '/images/upload.png' ?>" alt="">
                       </label>
-                      <input id="file-upload" class=" file_upload_reply" type="file" />
+                      <input id="file-upload" class=" file_upload_reply" type="file" <?php echo tkm_settings('upload_multiple') ? 'multiple' : '' ?> accept="<?php echo esc_attr(tkm_get_accept_attr()) ?>" />
+                      <div class="tkm-selected-files" id="ticket-selected-files"></div>
 
                       <button class="attachment-file" style="border: 0px !important;" type="button" id="openPopup"> <?php echo tkm_settings('voice_label') ?  tkm_settings('voice_label') : 'ارسال صدا ' ?>
                         <img width="18px" style="height: 18px;" src="<?php echo TKM_FRONT_ASSETS . '/images/microphone.png' ?>" alt="">

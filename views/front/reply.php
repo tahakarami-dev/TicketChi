@@ -17,9 +17,12 @@
             <?php $user_data = get_userdata($reply->creator_id) ?>
             <p class="timestamp"><?php ?></p>
             <p class="text_body_reply"><?php echo strip_tags($reply->body) ?></p>
-            <?php if ($reply->file): ?>
-                <div class="file_reply">
-                    <a class="link_file_ticket" href="<?php echo $reply->file ?>" download="<?php echo $reply->file ?>">فایل پیوست: <?php echo tkm_get_file_name($reply->file)  ?></a>
+            <?php $reply_files = tkm_get_files($reply->file); ?>
+            <?php if (!empty($reply_files)): ?>
+                <div class="file_reply tkm-files-list">
+                    <?php foreach ($reply_files as $reply_file): ?>
+                        <a class="link_file_ticket" href="<?php echo esc_url($reply_file) ?>" download="<?php echo esc_attr($reply_file) ?>">فایل پیوست: <?php echo esc_html(tkm_get_file_name($reply_file))  ?></a>
+                    <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 

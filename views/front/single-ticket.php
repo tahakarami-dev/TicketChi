@@ -46,9 +46,12 @@ $is_shortcode = tkm_settings('shortcode');
         </p>
         <div class="response-item-chat">
           <span class="body_ticket_text"><?php echo wp_kses_post($ticket->body) ?></span>
-          <?php if ($ticket->file): ?>
-            <div class="file_box_ticket">
-              <a class="link_file_ticket" href="<?php echo $ticket->file ?>" download="<?php echo $ticket->file ?>"> فایل پیوست: <?php echo tkm_get_file_name($ticket->file) ?></a>
+          <?php $ticket_files = tkm_get_files($ticket->file); ?>
+          <?php if (!empty($ticket_files)): ?>
+            <div class="file_box_ticket tkm-files-list">
+              <?php foreach ($ticket_files as $ticket_file): ?>
+                <a class="link_file_ticket" href="<?php echo esc_url($ticket_file) ?>" download="<?php echo esc_attr($ticket_file) ?>"> فایل پیوست: <?php echo esc_html(tkm_get_file_name($ticket_file)) ?></a>
+              <?php endforeach; ?>
             </div>
           <?php endif; ?>
           <?php if ($ticket->voice) : ?>
@@ -77,7 +80,8 @@ $is_shortcode = tkm_settings('shortcode');
                 <?php echo  tkm_settings('file_label') ?  tkm_settings('file_label') : 'آپلود فایل '   ?>
                 <img width="18px" style="height: 18px;" src="<?php echo TKM_FRONT_ASSETS . '/images/upload.png' ?>" alt="">
               </label>
-              <input id="file-upload" class="upload_btn_file" type="file" />
+              <input id="file-upload" class="upload_btn_file" type="file" <?php echo tkm_settings('upload_multiple') ? 'multiple' : '' ?> accept="<?php echo esc_attr(tkm_get_accept_attr()) ?>" />
+              <div class="tkm-selected-files" id="reply-selected-files"></div>
 
               <button type="button" id="openPopup" class="attachment-file"> <?php echo  tkm_settings('voice_label') ?  tkm_settings('voice_label') : 'ارسال صدا ' ?>
                 <img width="18px" style="height: 18px;" src="<?php echo TKM_FRONT_ASSETS . '/images/microphone.png' ?>" alt="">

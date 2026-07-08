@@ -162,24 +162,31 @@ if (isset($_GET['page'])) {
                                     </div>
                                 <?php endif;  ?>
 
-                                <label class="lable_form" for="file">فایل پیوست</label>
-                                <?php if ($is_edit): ?>
-                                    <input class="ticket-file input_form" name="file" type="text" value="<?php echo esc_attr($ticket->file) ?>">
-                                    <div class="proprties">
-                                        <?php if ($ticket->file): ?>
-                                            <a class="view_profile_link" download="<?php echo esc_attr($ticket->file) ?>" target="_blank" href="<?php echo esc_attr($ticket->file) ?>">مشاهده فایل پیوست</a>
-                                        <?php endif; ?>
+                                <label class="lable_form" for="tkm_ticket_files">فایل پیوست</label>
+                                <input class="input_form tkm-file-input" id="tkm_ticket_files" name="tkm_ticket_files[]" type="file" <?php echo tkm_settings('upload_multiple') ? 'multiple' : '' ?> accept="<?php echo esc_attr(tkm_get_accept_attr()) ?>">
+                                <p class="tkm-upload-hint"><?php echo esc_html(tkm_upload_hint_text()) ?></p>
 
-                                    <?php else: ?>
-                                        <input class="ticket-file input_form" name="file" type="text" placeholder="فایل تیکت را آپلود کنید">
-
-                                    <?php endif ?>
-                                    <?php if ($is_edit): ?>
-                                        <audio class="audio_controls" controls>
-                                            <source src="<?php echo $ticket->voice  ?>" type="audio/wav">
-                                        </audio>
-                                    <?php endif; ?>
+                                <?php $ticket_files = tkm_get_files($ticket->file); ?>
+                                <?php if (!empty($ticket_files)): ?>
+                                    <div class="tkm-admin-files">
+                                        <?php foreach ($ticket_files as $tkm_file): ?>
+                                            <div class="tkm-admin-file-row">
+                                                <a class="view_profile_link" target="_blank" download="<?php echo esc_attr($tkm_file) ?>" href="<?php echo esc_url($tkm_file) ?>"><?php echo esc_html(tkm_get_file_name($tkm_file)) ?></a>
+                                                <label class="tkm-remove-file">
+                                                    <input type="checkbox" name="remove_ticket_file[]" value="<?php echo esc_attr($tkm_file) ?>"> حذف
+                                                </label>
+                                            </div>
+                                        <?php endforeach; ?>
                                     </div>
+                                <?php endif; ?>
+
+                                <?php if ($is_edit && $ticket->voice): ?>
+                                    <div class="proprties">
+                                        <audio class="audio_controls" controls>
+                                            <source src="<?php echo esc_url($ticket->voice) ?>" type="audio/wav">
+                                        </audio>
+                                    </div>
+                                <?php endif; ?>
                                     <?php wp_nonce_field('ticket_send', 'ticket_nonce') ?>
 
                                     <input type="submit" name="publish" id="publish" class="submit-btn" value=" <?php echo $is_edit ? 'ویرایش تیکت' : 'ارسال' ?> ">
@@ -223,14 +230,20 @@ if (isset($_GET['page'])) {
                                             <?php wp_editor($reply->body, 'tkm-reply-body-' . $reply->ID, ['editor_height' => 150]) ?>
                                         </div>
 
-                                        <input class="ticket-file edit_reply_file" type="text" id="file-attachment" name="<?php echo 'reply-file-' . $reply->ID ?>" placeholder="فایل خود را آپلود کنید " value="<?php echo esc_attr($reply->file) ?>">
-                                        <div class="edit_file_box">
-                                            <?php if ($reply->file): ?>
-                                                <div class="link_edit_filebox">
-                                                    <a class="view_link_file_reply" id="view_link_file" target="_blank" href="<?php echo esc_attr($reply->file) ?>">مشاهده فایل</a>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
+                                        <?php $reply_files = tkm_get_files($reply->file); ?>
+                                        <?php if (!empty($reply_files)): ?>
+                                            <div class="tkm-admin-files">
+                                                <?php foreach ($reply_files as $reply_file): ?>
+                                                    <div class="tkm-admin-file-row">
+                                                        <a class="view_link_file_reply" target="_blank" href="<?php echo esc_url($reply_file) ?>"><?php echo esc_html(tkm_get_file_name($reply_file)) ?></a>
+                                                        <label class="tkm-remove-file">
+                                                            <input type="checkbox" name="remove_reply_file_<?php echo esc_attr($reply->ID) ?>[]" value="<?php echo esc_attr($reply_file) ?>"> حذف
+                                                        </label>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                        <input class="input_form tkm-file-input edit_reply_file" type="file" name="tkm_reply_files_<?php echo esc_attr($reply->ID) ?>[]" <?php echo tkm_settings('upload_multiple') ? 'multiple' : '' ?> accept="<?php echo esc_attr(tkm_get_accept_attr()) ?>">
                                     </div>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -254,7 +267,9 @@ if (isset($_GET['page'])) {
                         <label class="wpeditor_textarea" for="edit-text">ویرایشگر متن</label>
                         <?php wp_editor(null, 'reply_content', ['editor_height' => 150]) ?>
 
-                        <input style="margin-bottom: 20px;" class="ticket-file attechment_ticket" name="file_reply" placeholder="فایل خود را آپلود کنید " type="text">
+                        <label class="lable_form" for="tkm_reply_files">فایل پیوست پاسخ</label>
+                        <input style="margin-bottom: 10px;" class="input_form tkm-file-input attechment_ticket" id="tkm_reply_files" name="tkm_reply_files[]" type="file" <?php echo tkm_settings('upload_multiple') ? 'multiple' : '' ?> accept="<?php echo esc_attr(tkm_get_accept_attr()) ?>">
+                        <p class="tkm-upload-hint"><?php echo esc_html(tkm_upload_hint_text()) ?></p>
                         <input type="submit" name="publish" id="publish reply-send" class="submit-btn" value=" <?php echo $is_edit ? ' ارسال پاسخ ' : 'ارسال' ?> ">
                     </div>
                 </div>
@@ -369,22 +384,9 @@ if (isset($_GET['page'])) {
                                 </div>
                             <?php endif;  ?>
 
-                            <label class="lable_form" for="file">فایل پیوست</label>
-                            <?php if ($is_edit): ?>
-                                <input class="ticket-file input_form" name="file" type="text" value="<?php echo esc_attr($ticket->file) ?>">
-                                <div class="proprties">
-                                    <?php if ($ticket->file): ?>
-                                        <a class="view_profile_link" target="_blank" href="<?php echo esc_attr($ticket->file) ?>">مشاهده فایل پیوست</a>
-                                    <?php endif; ?>
-                                <?php else: ?>
-                                    <input class="ticket-file input_form" name="file" type="text" placeholder="فایل تیکت را آپلود کنید">
-                                <?php endif ?>
-                                <?php if ($is_edit): ?>
-                                    <audio class="audio_controls" controls>
-                                        <source src="<?php echo $ticket->voice  ?>" type="audio/wav">
-                                    </audio>
-                                <?php endif; ?>
-                                </div>
+                            <label class="lable_form" for="tkm_ticket_files">فایل پیوست</label>
+                            <input class="input_form tkm-file-input" id="tkm_ticket_files" name="tkm_ticket_files[]" type="file" <?php echo tkm_settings('upload_multiple') ? 'multiple' : '' ?> accept="<?php echo esc_attr(tkm_get_accept_attr()) ?>">
+                            <p class="tkm-upload-hint"><?php echo esc_html(tkm_upload_hint_text()) ?></p>
                                 <?php wp_nonce_field('ticket_send', 'ticket_nonce') ?>
 
                                 <input type="submit" name="publish" id="publish" class="submit-btn" value=" <?php echo $is_edit ? 'ویرایش تیکت / ارسال پاسخ ' : 'ارسال' ?> ">

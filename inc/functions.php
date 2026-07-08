@@ -58,6 +58,84 @@ function tkm_get_file_name($url)
     return basename($path);
 }
 
+/**
+ * نرمال‌سازی مقدار ستون file به آرایه‌ای از آدرس فایل‌ها.
+ * مقادیر قدیمی (تک آدرس ساده) و مقادیر جدید (JSON) هر دو پشتیبانی می‌شوند.
+ */
+function tkm_get_files($value)
+{
+    if (empty($value)) {
+        return [];
+    }
+
+    $decoded = json_decode($value, true);
+    if (is_array($decoded)) {
+        return array_values(array_filter($decoded, function ($url) {
+            return !empty($url);
+        }));
+    }
+
+    // سازگاری با نسخه قدیمی که یک آدرس ساده ذخیره می‌کرد
+    return [$value];
+}
+
+/**
+ * ساخت مقدار attribute accept برای input فایل بر اساس پسوندهای مجاز.
+ */
+function tkm_get_accept_attr()
+{
+    if (!class_exists('TKM_Upload_File')) {
+        return '';
+    }
+
+    $exts = TKM_Upload_File::allowed_extensions();
+    if (empty($exts)) {
+        return '';
+    }
+
+    return '.' . implode(',.', $exts);
+}
+
+/**
+ * متن راهنمای محدودیت‌های آپلود برای نمایش زیر ورودی فایل.
+ */
+function tkm_upload_hint_text()
+{
+    if (!class_exists('TKM_Upload_File')) {
+        return '';
+    }
+
+    $exts = TKM_Upload_File::allowed_extensions();
+    $max_mb = round(TKM_Upload_File::max_size_bytes() / (1024 * 1024), 1);
+
+    $parts = [];
+    if (!empty($exts)) {
+        $parts[] = 'پسوندهای مجاز: ' . implode('، ', $exts);
+    }
+    $parts[] = 'حداکثر حجم هر فایل: ' . convert_to_persian_numbers($max_mb) . ' مگابایت';
+    if (TKM_Upload_File::is_multiple()) {
+        $parts[] = 'حداکثر ' . convert_to_persian_numbers(TKM_Upload_File::max_files()) . ' فایل';
+    }
+
+    return implode(' — ', $parts);
+}
+
+/**
+ * تبدیل آرایه‌ای از آدرس فایل‌ها به مقدار قابل ذخیره در ستون file (JSON).
+ */
+function tkm_files_encode($urls)
+{
+    $urls = array_values(array_filter((array) $urls, function ($url) {
+        return !empty($url);
+    }));
+
+    if (empty($urls)) {
+        return null;
+    }
+
+    return wp_json_encode($urls);
+}
+
 function get_status_name($status)
 {
     $statuses = tkm_get_status();

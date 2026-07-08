@@ -200,6 +200,46 @@ if (class_exists('CSF')) {
   ));
 
   CSF::createSection($prefix, array(
+    'title'  => 'مدیریت آپلود',
+    'fields' => array(
+      array(
+        'type'    => 'subheading',
+        'content' => 'در این بخش می‌توانید محدودیت‌های آپلود فایل در تیکت‌ها و پاسخ‌ها را مدیریت کنید.',
+      ),
+      array(
+        'id'      => 'upload_max_size',
+        'type'    => 'number',
+        'title'   => 'حداکثر حجم هر فایل (مگابایت)',
+        'desc'    => 'حداکثر حجم مجاز برای هر فایل آپلودی بر حسب مگابایت.',
+        'default' => 5,
+        'unit'    => 'MB',
+      ),
+      array(
+        'id'      => 'upload_allowed_ext',
+        'type'    => 'text',
+        'title'   => 'پسوندهای مجاز',
+        'desc'    => 'پسوندهای مجاز را با کاما (,) از هم جدا کنید. مثال: jpg,png,pdf,zip',
+        'default' => 'jpg,jpeg,png,gif,webp,pdf,zip,rar,doc,docx,xls,xlsx,txt,mp4,mp3',
+      ),
+      array(
+        'id'      => 'upload_multiple',
+        'type'    => 'switcher',
+        'title'   => 'آپلود چند فایل',
+        'label'   => 'امکان آپلود همزمان چند فایل در هر تیکت / پاسخ',
+        'default' => false,
+      ),
+      array(
+        'id'         => 'upload_max_files',
+        'type'       => 'number',
+        'title'      => 'حداکثر تعداد فایل',
+        'desc'       => 'حداکثر تعداد فایل قابل آپلود در حالت چند فایلی.',
+        'default'    => 5,
+        'dependency' => array('upload_multiple', '==', 'true'),
+      ),
+    ),
+  ));
+
+  CSF::createSection($prefix, array(
     'title'  => 'پاسخ های آماده',
     'fields' => array(
       array(

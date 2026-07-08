@@ -44,8 +44,8 @@ class TKM_Front_AJAX
         $ticket_data['edd_product'] = sanitize_text_field($_POST['edd_purchased_products']);
         $ticket_data['department_id'] = sanitize_text_field($_POST['child-department']);
 
-        if ($upload_result && isset($upload_result['url'])) {
-            $ticket_data['file'] = esc_url($upload_result['url']);
+        if ($upload_result && !empty($upload_result['urls'])) {
+            $ticket_data['file'] = tkm_files_encode(array_map('esc_url_raw', $upload_result['urls']));
         }
         $voice_data = isset($_POST['audioData']) ? $_POST['audioData'] : null;
         $voice_upload_result = null;
@@ -107,15 +107,19 @@ class TKM_Front_AJAX
         ];
 
         $status = !empty($_POST['status']) ? $_POST['status'] : 'open';
-        $ticket_manager->update_status($ticket_id, $status);
 
         if (isset($_FILES['file'])) {
             $uploader = new TKM_Upload_File($_FILES['file']);
             $upload_result = $uploader->upload();
-            if ($upload_result['success']) {
-                $data_reply['file'] = esc_url($upload_result['url']);
+            if (!$upload_result['success']) {
+                $this->make_response(['success' => false, 'result' => $upload_result['message']]);
+            }
+            if (!empty($upload_result['urls'])) {
+                $data_reply['file'] = tkm_files_encode(array_map('esc_url_raw', $upload_result['urls']));
             }
         }
+
+        $ticket_manager->update_status($ticket_id, $status);
 
         if (!empty($_POST['audioData'])) {
             $voice_uploader = new TKM_Upload_Voice($_POST['audioData']);
