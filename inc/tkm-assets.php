@@ -40,7 +40,13 @@ class TKM_ASSETS
 
         wp_localize_script('tkm-scripts', 'TKM_DATA_AJAX', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('tkm_ajax_nonce')
+            'nonce' => wp_create_nonce('tkm_ajax_nonce'),
+            'upload' => [
+                'multiple'    => TKM_Upload_File::is_multiple(),
+                'max_files'   => TKM_Upload_File::max_files(),
+                'max_size'    => TKM_Upload_File::max_size_bytes(),
+                'allowed_ext' => TKM_Upload_File::allowed_extensions(),
+            ],
         ]);
     }
 }

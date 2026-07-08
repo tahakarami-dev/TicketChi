@@ -95,22 +95,6 @@ jQuery(document).ready(function ($) {
     },
   });
 
-  $(".ticket-file").click(function (e) {
-    e.preventDefault();
-    var $this = $(this);
-    var file = wp
-      .media({
-        multiole: false,
-      })
-      .open()
-      .on("select", function () {
-        var uploadedFILE = file.state().get("selection").first();
-        var fileURL = uploadedFILE.toJSON().url;
-
-        $this.val(fileURL);
-      });
-  });
-
   $(".edit-date").click(function (e) {
     e.preventDefault();
 

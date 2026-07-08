@@ -10,7 +10,72 @@ jQuery(document).ready(function($) {
         $(".tkm_item_send_form").slideToggle(); 
     }); 
 
-    $("#tkm-parent-depaertment").change(function(e) { 
+    function tkmUploadConfig() {
+        return (typeof TKM_DATA_AJAX !== 'undefined' && TKM_DATA_AJAX.upload) ? TKM_DATA_AJAX.upload : {
+            multiple: false, max_files: 5, max_size: 5242880, allowed_ext: []
+        };
+    }
+
+    // اعتبارسنجی سمت کاربر و افزودن فایل‌ها به FormData. در صورت خطا false برمی‌گرداند.
+    function tkmAppendFiles(inputSelector, formData) {
+        var cfg = tkmUploadConfig();
+        var files = $(inputSelector).prop('files');
+
+        if (!files || !files.length) {
+            return true; // فایل اختیاری است
+        }
+
+        var maxFiles = cfg.multiple ? cfg.max_files : 1;
+        if (files.length > maxFiles) {
+            Swal.fire({
+                title: "تعداد فایل زیاد است",
+                text: "حداکثر " + maxFiles + " فایل می‌توانید آپلود کنید.",
+                icon: "warning"
+            });
+            return false;
+        }
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var ext = file.name.split('.').pop().toLowerCase();
+
+            if (cfg.allowed_ext && cfg.allowed_ext.length && cfg.allowed_ext.indexOf(ext) === -1) {
+                Swal.fire({
+                    title: "پسوند غیرمجاز",
+                    text: "پسوند فایل «" + ext + "» مجاز نیست.",
+                    icon: "warning"
+                });
+                return false;
+            }
+
+            if (file.size > cfg.max_size) {
+                Swal.fire({
+                    title: "حجم فایل زیاد است",
+                    text: "حجم فایل «" + file.name + "» بیشتر از حد مجاز است.",
+                    icon: "warning"
+                });
+                return false;
+            }
+
+            formData.append('file[]', file);
+        }
+
+        return true;
+    }
+
+    // نمایش نام فایل‌های انتخاب‌شده زیر دکمه آپلود
+    $(document).on('change', '#file-upload', function() {
+        var container = $(this).closest('form').find('.tkm-selected-files');
+        var files = this.files;
+        container.empty();
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                container.append($('<span class="tkm-selected-file"></span>').text(files[i].name));
+            }
+        }
+    });
+
+    $("#tkm-parent-depaertment").change(function(e) {
         e.preventDefault(); 
         let selectedValue = $(this).val(); 
 
@@ -43,22 +108,23 @@ jQuery(document).ready(function($) {
     $('#tkm-submit-ticket').submit(function(e) { 
         e.preventDefault(); 
 
-        let $this = $(this); 
-        let submit = $this.find('.tkm-submit-ticket'); 
-        let loader = $this.find('.loader-submit'); 
-        submit.prop('disabled', true); 
-        loader.show(); 
+        let $this = $(this);
+        let submit = $this.find('.tkm-submit-ticket');
+        let loader = $this.find('.loader-submit');
 
-        let form_data = new FormData(); 
-        form_data.append('action', 'tkm-submit-ticket'); 
-        form_data.append('nonce', TKM_DATA_AJAX.nonce); 
-        form_data.append('parent_department', $('#tkm-parent-depaertment').val()); 
-        form_data.append('child-department', $('#tkm-child-department').val()); 
-        form_data.append('title_ticket', $('#title-ticket').val()); 
-        form_data.append('priority', $('#importance').val()); 
-        form_data.append('content', $('#ticket-content').val()); 
-        form_data.append('file', $('#file-upload').prop('files')[0]);
+        let form_data = new FormData();
+        form_data.append('action', 'tkm-submit-ticket');
+        form_data.append('nonce', TKM_DATA_AJAX.nonce);
+        form_data.append('parent_department', $('#tkm-parent-depaertment').val());
+        form_data.append('child-department', $('#tkm-child-department').val());
+        form_data.append('title_ticket', $('#title-ticket').val());
+        form_data.append('priority', $('#importance').val());
+        form_data.append('content', $('#ticket-content').val());
+        if (!tkmAppendFiles('#file-upload', form_data)) { return; }
         form_data.append('audioData', $('#audioData').val());
+
+        submit.prop('disabled', true);
+        loader.show();
         form_data.append('user_purchased_products', $('#products').val()); 
         form_data.append('edd_purchased_products', $('#edd-products').val()); 
 
@@ -129,10 +195,13 @@ jQuery(document).ready(function($) {
         form_data.append('nonce', TKM_DATA_AJAX.nonce);
         form_data.append('status', $('#status').is(':checked') ? $('#status').val() : '');
         form_data.append('ticket_id', $('#ticket_id').val());
-        form_data.append('body', $('#body').val() || ''); 
-        let file = $('#file-upload').prop('files')[0];
-        form_data.append('file', file ? file : null); 
-        form_data.append('audioData', $('#audioData').val() || ''); 
+        form_data.append('body', $('#body').val() || '');
+        if (!tkmAppendFiles('#file-upload', form_data)) {
+            submit.prop('disabled', false);
+            loader.hide();
+            return;
+        }
+        form_data.append('audioData', $('#audioData').val() || '');
     
         $.ajax({
             type: "post",

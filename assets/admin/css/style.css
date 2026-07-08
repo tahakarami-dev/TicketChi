@@ -825,3 +825,48 @@ h1 {
     margin-top: -50px;
   }
 }
+
+/* ===== مدیریت آپلود: نمایش و آپلود چند فایلی (ادمین) ===== */
+.tkm-file-input {
+  margin-top: 5px;
+  padding: 8px !important;
+  background: #fff;
+}
+.tkm-upload-hint {
+  font-size: 12px;
+  color: #777;
+  margin: 6px 0 12px;
+  line-height: 1.7;
+}
+.tkm-admin-files {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0 15px;
+}
+.tkm-admin-file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #f7f7f9;
+  border: 1px solid #e2e2ea;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.tkm-admin-file-row a {
+  word-break: break-all;
+}
+.tkm-remove-file {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #b32d2e;
+  white-space: nowrap;
+  cursor: pointer;
+  margin: 0;
+}
+.tkm-remove-file input {
+  margin: 0;
+}

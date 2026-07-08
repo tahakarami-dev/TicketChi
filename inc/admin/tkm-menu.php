@@ -160,6 +160,7 @@ class TKM_MENU extends BASE_MENU
     {
 
         if (!empty($data['user-id']) && is_array($data['user-id']) &&  !empty($data['ticket-title']) &&  !empty($data['tkm-content']) &&  !empty($data['department_id'])) {
+            $file_value = $this->collect_files(null, 'tkm_ticket_files');
             foreach ($data['user-id'] as $user_id) {
                 $inserted = $this->wpdb->insert(
                     $this->table,
@@ -172,7 +173,7 @@ class TKM_MENU extends BASE_MENU
                         'user_id' => $user_id,
                         'from_admin' => 1,
                         'department_id' => $data['department_id'],
-                        'file' => isset($data['file']) ? sanitize_text_field($data['file']) : null,
+                        'file' => $file_value,
                         'note' => isset($data['note']) ? sanitize_text_field($data['note']) : null
 
                     ),
@@ -220,7 +221,7 @@ class TKM_MENU extends BASE_MENU
                             $reply_data = [
                                 'ID' => $reply->ID,
                                 'body' => stripslashes_deep($data['tkm-reply-body-' . $reply->ID]),
-                                'file' => sanitize_text_field($data['reply-file-' . $reply->ID]) ? sanitize_text_field($data['reply-file-' . $reply->ID]) : null
+                                'file' => $this->collect_files($reply->file, 'tkm_reply_files_' . $reply->ID, 'remove_reply_file_' . $reply->ID)
                             ];
 
                             $this->update_reply($reply_data);
@@ -246,7 +247,7 @@ class TKM_MENU extends BASE_MENU
                     'creator_id' => $user_replyed,
                     'from_admin' => 1,
                     'body' => stripslashes_deep($data['reply_content']),
-                    'file' => isset($data['file_reply']) ? sanitize_text_field($data['file_reply']) : null
+                    'file' => $this->collect_files(null, 'tkm_reply_files')
                 ];
                 $insert_reply =  $this->create_reply($reply_data);
                 if ($insert_reply) {
@@ -314,6 +315,38 @@ class TKM_MENU extends BASE_MENU
         );
     }
 
+    /**
+     * جمع‌آوری فایل‌های نهایی برای ذخیره:
+     * فایل‌های موجود (منهای حذف‌شده‌ها) + فایل‌های تازه آپلودشده.
+     * خروجی: مقدار JSON قابل ذخیره در ستون file یا null.
+     */
+    private function collect_files($current_value, $files_key, $remove_key = null)
+    {
+        $files = tkm_get_files($current_value);
+
+        if ($remove_key && !empty($_POST[$remove_key]) && is_array($_POST[$remove_key])) {
+            $remove = array_map('esc_url_raw', wp_unslash($_POST[$remove_key]));
+            $files = array_values(array_filter($files, function ($url) use ($remove) {
+                return !in_array($url, $remove, true);
+            }));
+        }
+
+        if (!empty($_FILES[$files_key]) && !empty($_FILES[$files_key]['name'])) {
+            $uploader = new TKM_Upload_File($_FILES[$files_key]);
+            $result = $uploader->upload();
+
+            if (!$result['success']) {
+                echo '<div class="notice notice-error " style="padding: 10px; width:۹۵%">' . esc_html($result['message']) . '</div>';
+            } else {
+                foreach ($result['urls'] as $url) {
+                    $files[] = esc_url_raw($url);
+                }
+            }
+        }
+
+        return tkm_files_encode($files);
+    }
+
     public function update_ticket($data)
     {
 
@@ -322,6 +355,8 @@ class TKM_MENU extends BASE_MENU
         $user_id = isset($data['user-id']) && is_array($data['user-id']) ? intval($data['user-id'][0]) : null;
 
         if ($user_id &&   !empty($data['ticket-title']) &&  !empty($data['tkm-content']) &&  !empty($user_id) && !empty($creator_id) &&  !empty($data['department_id'])) {
+            $current_ticket = $this->get_ticket();
+            $file_value = $this->collect_files($current_ticket ? $current_ticket->file : null, 'tkm_ticket_files', 'remove_ticket_file');
             $updated = $this->wpdb->update(
                 $this->table, 
                 array(
@@ -333,7 +368,7 @@ class TKM_MENU extends BASE_MENU
                     'user_id' => $user_id,
                     'from_admin' => 1,
                     'department_id' => intval($data['department_id']),
-                    'file' => isset($data['file']) ? sanitize_text_field($data['file']) : null,
+                    'file' => $file_value,
                     'note' => isset($data['note']) ? sanitize_text_field($data['note']) : null,
                     'create_date' => sanitize_text_field($data['date_ticket'])
                 ),
