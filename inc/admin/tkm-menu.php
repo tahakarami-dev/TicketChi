@@ -251,6 +251,11 @@ class TKM_MENU extends BASE_MENU
                 $insert_reply =  $this->create_reply($reply_data);
                 if ($insert_reply) {
                     $this->update_reply_date();
+                    // پس از پاسخ ادمین، وضعیت تیکت به صورت خودکار به «پاسخ داده شده» تغییر می‌کند
+                    // مگر اینکه ادمین به صورت دستی تیکت را بسته باشد
+                    if (!isset($data['status']) || sanitize_text_field($data['status']) !== 'closed') {
+                        $this->update_status('answerd');
+                    }
                 }
             }
             if (!empty($ticket_ids)) {
@@ -296,6 +301,17 @@ class TKM_MENU extends BASE_MENU
     public function update_reply_date()
     {
         return   $this->wpdb->query($this->wpdb->prepare("UPDATE " . $this->table . " SET reply_date = NOW() WHERE ID = %d", $this->ticket_id));
+    }
+
+    public function update_status($status)
+    {
+        return $this->wpdb->update(
+            $this->table,
+            ['status' => $status],
+            ['ID' => intval($this->ticket_id)],
+            ['%s'],
+            ['%d']
+        );
     }
 
     public function update_ticket($data)
