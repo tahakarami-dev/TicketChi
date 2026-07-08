@@ -9,7 +9,14 @@
         "classmap":["inc/"]
     },
     "require": {
+        "php": ">=7.4",
         "morilog/jalali": "3.4.2",
-        "kavenegar/php": "^1.2"
+        "kavenegar/php": "^1.2",
+        "nesbot/carbon": "2.63"
+    },
+      "config": {
+    "platform": {
+      "php": "7.4.0"
     }
+  }
 }

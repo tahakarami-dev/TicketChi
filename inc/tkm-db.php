@@ -68,6 +68,7 @@ class TKM_DB
     file text DEFAULT NULL,
     note varchar(512) DEFAULT NULL,
     product bigint(20) DEFAULT NULL,
+    edd_product bigint(20) DEFAULT NULL,
     PRIMARY KEY (ID),
     KEY title (title),
     KEY creator_id (creator_id),

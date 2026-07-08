@@ -1,7 +1,6 @@
  <?php
     $ticket_analysis = new TKM_Analysis();
     $employees = $ticket_analysis->get_employee_ticket_stats();
-
     ?>
  <div class="dashboard-container">
      <h1>داشبورد تحلیل سیستم تیکت پشتیبانی</h1>
@@ -49,10 +48,10 @@
                          <td><?php echo get_userdata($employee->user_id)->display_name; ?></td>
                          <td><?php echo $employee->ticket_count; ?></td>
                          <td>
-                         <?php echo $employee->open_ticket_count; ?>
+                             <?php echo $employee->open_ticket_count; ?>
                          </td>
                          <td>
-                         <?php echo $employee->answered_ticket_count; ?>
+                             <?php echo $employee->answered_ticket_count; ?>
                          </td>
                          <td><?php echo round($employee->avg_rating, 2); ?></td>
                      </tr>

@@ -11,7 +11,6 @@ class TKM_SMS_Notification
 
     public function submit_ticket($ticket_id)
     {
-        // بررسی فعال بودن ارسال SMS
         if (!tkm_settings('user_create_sms')) {
             return NULL;
         }
@@ -40,7 +39,7 @@ class TKM_SMS_Notification
 
             $code = tkm_settings('user_create_sms_pattern_code');
             $send_sms = (new $class($phone, $message, $code))->send();
-            if($send_sms){
+            if ($send_sms) {
                 var_dump($send_sms);
             }
         }
@@ -48,21 +47,16 @@ class TKM_SMS_Notification
 
     private function get_phone($ticket)
     {
-        // تشخیص اینکه آیا در محیط ادمین هستیم یا فرانت‌اند
         $is_admin = is_admin();
-    
-        // اگر در محیط ادمین هستیم، از creator_id استفاده کن
+
         if (is_admin() && !wp_doing_ajax()) {
             return get_user_meta($ticket->user_id, tkm_settings('phone-service-key-user'), true);
-        }
-        else{
+        } else {
             return get_user_meta($ticket->creator_id, tkm_settings('phone-service-key-user'), true);
-
         }
-        
-        // اگر در محیط فرانت‌اند هستیم، از user_id استفاده کن
+
     }
-    
+
 
     private function get_message($ticket)
     {
@@ -74,7 +68,7 @@ class TKM_SMS_Notification
         $department = $department_manager->get_a_department($ticket->ID);
 
         foreach ($pattern as $code) {
-            $code = trim($code); // حذف فاصله‌های اضافی
+            $code = trim($code); 
 
             switch ($code) {
                 case '{{ticket_id}}':
@@ -102,7 +96,6 @@ class TKM_SMS_Notification
                     break;
 
                 default:
-                    // کدهای اضافی که تطابق ندارند نادیده گرفته شوند
                     break;
             }
         }

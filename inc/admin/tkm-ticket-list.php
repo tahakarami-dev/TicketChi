@@ -65,33 +65,32 @@ class TKM_Ticket_List extends WP_List_Table
             $args[] = $params['creator_id'];
         }
         if (isset($params['search']) && $params['search'] !== '') {
-            $sql .= " AND (title LIKE '%" .$params['search'] ."%')";
+            $sql .= " AND (title LIKE '%" . $params['search'] . "%')";
         }
         if (isset($params['status']) && $params['status'] !== '') {
             $sql .= " AND (status = %s)";
             $args[] = $params['status'];
         }
 
-        switch(isset($params['orderby'])){
+        switch (isset($params['orderby'])) {
             case "create_date":
-                $sql .= " ORDER BY create_date " .$params['order'];
+                $sql .= " ORDER BY create_date " . $params['order'];
                 break;
-                case "reply_date":
-                    $sql .= " ORDER BY reply_date " .$params['order'];
-                    break;
-                
-                    default:
-                    $sql .= " ORDER BY reply_date DESC";
-        }
-        
+            case "reply_date":
+                $sql .= " ORDER BY reply_date " . $params['order'];
+                break;
 
-        return  $this->wpdb->get_results($this->wpdb->prepare("SELECT * FROM " . $this->table .$sql,$args ) ,ARRAY_A);
+            default:
+                $sql .= " ORDER BY reply_date DESC";
+        }
+
+
+        return  $this->wpdb->get_results($this->wpdb->prepare("SELECT * FROM " . $this->table . $sql, $args), ARRAY_A);
     }
 
     public function ticket_count()
     {
         return count($this->get_tickets());
-
     }
 
     public function prepare_items()
@@ -118,88 +117,73 @@ class TKM_Ticket_List extends WP_List_Table
         ]);
     }
 
-    public function bulk_action() {
-        $action = $this->current_action(); // دریافت عملیات انتخاب شده
-        $action = str_replace('bulk-', '', $action); // حذف "bulk-" از عم
-        
-
-    
-        // دریافت شناسه‌های انتخاب شده
+    public function bulk_action()
+    {
+        $action = $this->current_action();
+        $action = str_replace('bulk-', '', $action);
         $ids = isset($_POST['id']) ? $_POST['id'] : [];
-    
+
         if (count($ids)) {
             foreach ($ids as $id) {
                 if ($action == 'delete') {
-                     $this->delete_ticket($id);
-                    (new TKM_Reply_Manager($id))->delete_replies(); // حذف پاسخ‌ها
+                    $this->delete_ticket($id);
+                    (new TKM_Reply_Manager($id))->delete_replies();
                 } else {
-                    // به‌روزرسانی وضعیت تیکت
-                  $game=  $this->update_ticket_status($id, $action);
-                    if($game){
+                    $game =  $this->update_ticket_status($id, $action);
+                    if ($game) {
                     }
-                   
                 }
             }
-    
-            // پیام موفقیت‌آمیز
+
             TKM_Flash_Message::add_message('عملیات با موفقیت انجام شد');
         }
     }
 
-    public function trash_action(){
+    public function trash_action()
+    {
 
-        if(isset($_GET['id']) && $_GET['action'] == 'trash' && isset($_GET['action']) && isset($_GET['_wpnonce'])){
+        if (isset($_GET['id']) && $_GET['action'] == 'trash' && isset($_GET['action']) && isset($_GET['_wpnonce'])) {
 
-            if(!wp_verify_nonce( $_GET['_wpnonce'], 'tkm_trash_ticket' )){
+            if (!wp_verify_nonce($_GET['_wpnonce'], 'tkm_trash_ticket')) {
                 wp_die('نانس شما تایید نشد ');
-
             }
-            
 
-            $this->update_ticket_status($_GET['id'],'trash');
-            
 
+            $this->update_ticket_status($_GET['id'], 'trash');
         }
-
     }
 
-    public function delete_action(){
+    public function delete_action()
+    {
 
-        if(isset($_GET['id']) && $_GET['action'] == 'delete' && isset($_GET['action']) && isset($_GET['_wpnonce'])){
+        if (isset($_GET['id']) && $_GET['action'] == 'delete' && isset($_GET['action']) && isset($_GET['_wpnonce'])) {
 
-            if(!wp_verify_nonce( $_GET['_wpnonce'], 'tkm_delete_ticket' )){
+            if (!wp_verify_nonce($_GET['_wpnonce'], 'tkm_delete_ticket')) {
                 wp_die('نانس شما تایید نشد ');
-                
-
             }
-            
+
 
             $this->delete_ticket($_GET['id']);
-            
-            
-
         }
-
-
     }
 
-    public function delete_ticket($id){
+    public function delete_ticket($id)
+    {
 
-        $this->wpdb->delete($this->table, ['id' => $id] , ['%d']);
-
+        $this->wpdb->delete($this->table, ['id' => $id], ['%d']);
     }
 
-    public function update_ticket_status($id, $status){
+    public function update_ticket_status($id, $status)
+    {
 
-        $this->wpdb->update($this->table, ['status' => $status] , ['id' => $id] , ['%s'], ['%d']);
-
+        $this->wpdb->update($this->table, ['status' => $status], ['id' => $id], ['%s'], ['%d']);
     }
 
     public function column_creator_id($item)
     {
 
         $user_data = get_userdata($item['creator_id']);
-        $creator = '<a href="admin.php?page=tkm-tickets&creator_id='.$item['creator_id'].'">' . $user_data->display_name . ' </a>';
+        $creator = '<a href="admin.php?page=tkm-tickets&creator_id=' . $item['creator_id'] . '">' . $user_data->display_name . ' </a>';
         $actions = ['edit' => '<a href="' . get_edit_user_link($item['creator_id']) . ' "target="_blank">' . 'پروفایل' . '</a>'];
         return $creator . $this->row_actions($actions);
     }
@@ -209,29 +193,26 @@ class TKM_Ticket_List extends WP_List_Table
 
         $title = '<strong>' . $item['title'] . '</strong>';
         $actions = [
-            'id' => sprintf('<span>' . 'آیدی' . ': %d </span>', absint( $item['ID'] )),
-            'edit' => sprintf('<a href="?page=tkm-edit-ticket&id=%s"> ' . 'ویرایش' . ' </a>' , absint( $item['ID'] ))
+            'id' => sprintf('<span>' . 'آیدی' . ': %d </span>', absint($item['ID'])),
+            'edit' => sprintf('<a href="?page=tkm-edit-ticket&id=%s"> ' . 'ویرایش' . ' </a>', absint($item['ID']))
         ];
-        if(isset($_GET['status']) && $_GET['status'] =='trash' ){
+        if (isset($_GET['status']) && $_GET['status'] == 'trash') {
 
-            $nonce = wp_create_nonce( 'tkm_delete_ticket' );
+            $nonce = wp_create_nonce('tkm_delete_ticket');
             $actions['trash'] = sprintf(
                 "<a href='?page=tkm-tickets&action=delete&id=%s&_wpnonce=%s'> " . '   پاک کردن برای همیشه' . " </a>",
-                absint( $item['ID'] ),
+                absint($item['ID']),
                 $nonce
             );
-        
-
-        }else{
-            $nonce = wp_create_nonce( 'tkm_trash_ticket' );
+        } else {
+            $nonce = wp_create_nonce('tkm_trash_ticket');
             $actions['trash'] = sprintf(
                 "<a href='?page=tkm-tickets&action=trash&id=%s&_wpnonce=%s'> " . '  زباله دان' . " </a>",
-                absint( $item['ID'] ),
+                absint($item['ID']),
                 $nonce
             );
-
         }
-     
+
         return $title . $this->row_actions($actions);
     }
 
@@ -253,7 +234,7 @@ class TKM_Ticket_List extends WP_List_Table
                 break;
 
             case 'department_id':
-                return '<a href="admin.php?page=tkm-tickets&department_id='.$item[$column_name].'">' . get_department_html($item[$column_name]) . '</a>';
+                return '<a href="admin.php?page=tkm-tickets&department_id=' . $item[$column_name] . '">' . get_department_html($item[$column_name]) . '</a>';
                 break;
 
             case 'creator_id':
@@ -261,26 +242,27 @@ class TKM_Ticket_List extends WP_List_Table
                 break;
 
             case 'status':
-                return '<span class="status-list" style="background-color:'.get_status_color($item[$column_name]).'">'. get_status_name($item[$column_name]) .'</span>';
+                return '<span class="status-list" style="background-color:' . get_status_color($item[$column_name]) . '">' . get_status_name($item[$column_name]) . '</span>';
                 break;
 
             case 'priority':
-                return '<div class="box_priority"><a class="tkm-priority-' . $item[$column_name] . '" href="admin.php?page=tkm-tickets&priority='.$item[$column_name].'">' . get_priority_name($item[$column_name]) . '</a></div>';
+                return '<div class="box_priority"><a class="tkm-priority-' . $item[$column_name] . '" href="admin.php?page=tkm-tickets&priority=' . $item[$column_name] . '">' . get_priority_name($item[$column_name]) . '</a></div>';
                 break;
 
             case 'create_date':
-                return  jdate($item[$column_name]);
-                
+                return  wp_date(get_option('date_format') . ' ' . get_option('time_format'), strtotime($item[$column_name]));
+
                 break;
 
 
             case 'reply_date':
-                return jdate($item[$column_name]);
+                return  wp_date(get_option('date_format') . ' ' . get_option('time_format'), strtotime($item[$column_name]));
                 break;
         }
     }
 
-    public function get_sortable_columns(){
+    public function get_sortable_columns()
+    {
         return [
             'create_date' => ['create_date', true],
             'reply_date' => ['reply_date', true]
@@ -288,21 +270,19 @@ class TKM_Ticket_List extends WP_List_Table
         ];
     }
 
-     // To show bulk action dropdown
-     function get_bulk_actions()
-     {
-             $actions = [];
+    // To show bulk action dropdown
+    function get_bulk_actions()
+    {
+        $actions = [];
 
-             foreach($this->statues as $status){
+        foreach ($this->statues as $status) {
 
-                $actions ['bulk-' . $status['slug']] = $status['name'];
-
-
-             }
-             if(isset($_GET['status']) && $_GET['status'] =='trash' ){
-                unset($actions['bulk-trash']);
-                $actions['bulk-delete'] = 'حذف';
-             }
-             return $actions;
-     }
+            $actions['bulk-' . $status['slug']] = $status['name'];
+        }
+        if (isset($_GET['status']) && $_GET['status'] == 'trash') {
+            unset($actions['bulk-trash']);
+            $actions['bulk-delete'] = 'حذف';
+        }
+        return $actions;
+    }
 }

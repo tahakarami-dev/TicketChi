@@ -1,21 +1,20 @@
 <?php
 /*
 Plugin Name:  تیکت‌چی
-Description: تیکت‌چی یک افزونه قدرتمند مدیریت تیکت‌ها در وردپرس است که با طراحی جذاب و قابلیت‌های کاربردی، تجربه‌ای حرفه‌ای را برای شما و کاربران فراهم می‌کند.
-Version: 1.1.2
-Author: Taha karami
+Description: با تیکت‌چی، مدیریت تیکت‌های پشتیبانی در وردپرس را متحول کنید. این افزونه قدرتمند، با ظاهری جذاب و مدرن و امکاناتی که واقعاً به کارتان می‌آید، تجربه‌ای حرفه‌ای و بی‌دردسر را برای شما و کاربرانتان رقم می‌زند. پشتیبانی را از حالت تکراری خارج کنید!
+Version: 1.3.0
+Author: طاها کرمی
+Author URI: https://www.rtl-theme.com/author/taha-karami
 */
 
 defined('ABSPATH') || exit('NO Access');
-
-require_once __DIR__.'/activatezhk/validate-locked.php';
 
 class Core
 {
 
     private static $_instance = null;
 
-    const MINIUM_PHP_VERSION = '7.2';
+    const MINIUM_PHP_VERSION = '7.4';
 
     public static function instance()
     {
@@ -39,13 +38,11 @@ class Core
         $this->constant();
         $this->init();
     }
-
-
+    
     public function constant()
     {
 
         if (!function_exists('get_plugin_data')) {
-
             require_once(ABSPATH . 'wp-admin/includes/plugin.php');
         }
 
@@ -56,101 +53,86 @@ class Core
         define('TKM_FRONT_ASSETS', trailingslashit(TKM_URL . 'assets/front'));
         define('TKM_INC_PATH', trailingslashit(TKM_PATH . 'inc'));
         define('TKM_VIEWS_PATH', trailingslashit(TKM_PATH . 'views'));
-
-
-
-
-
         $tkm_plugin_data =  get_plugin_data(TKM_BASE_FILE, '<');
         define('TKM_VER',  $tkm_plugin_data['Version']);
     }
 
     public function init()
     {
+        add_filter('plugin_action_links_' . plugin_basename(__FILE__), function ($links) {
+            $links[] = '<a href="' . admin_url('admin.php?page=tkm-settings') . '">تنظیمات</a>';
+            return $links;
+        });
+        add_action('tkm_auto_close', [$this, 'tkm_auto_close_events']);
+
 
         require_once TKM_PATH . 'vendor/autoload.php';
         require_once TKM_INC_PATH . 'admin/codestar/codestar-framework.php';
         require_once TKM_INC_PATH . 'admin/tkm-settings.php';
         require_once  TKM_INC_PATH . 'functions.php';
-
-
-
-
+        require_once  TKM_INC_PATH . 'admin/abstract/base-menu.php';
 
         register_activation_hook(TKM_BASE_FILE, [$this, 'active']);
         register_deactivation_hook(TKM_BASE_FILE, [$this, 'deactive']);
 
-   
-    
-
-    
         tkm_settings();
-
-        if(is_admin()){
+        if (is_admin()) {
 
             new TKM_MENU();
-
             new TKM_Admin_Ajax();
-
             new TKM_Analysis();
-
-        }else{
-            d3f39699b20b2c4dd150b133079e::adb85ced23ff1f05e3b26d022fa83f();
-
-            
-
+        } else {
+            new  TKM_SMS_Notification();
+            new TKM_Shortcode_Router();
+            new TKM_Shortcode_Url();
         }
         new TKM_Front_AJAX();
         new TKM_ASSETS();
-        d3f39699b20b2c4dd150b133079e::a6f06590baff95c95904183ca9e();
-
-     
+        new TKM_WC_Dashboard();
     }
 
     public function active()
     {
-
         TKM_DB::create_table();
 
-        if (! wp_next_scheduled('tkm_auto_cloes')) {
-            wp_schedule_event(time(), 'daily', 'tkm_auto_cloes');
+        if (! wp_next_scheduled('tkm_auto_close')) {
+            wp_schedule_event(time(), 'daily', 'tkm_auto_close');
         }
-
-        add_action('tkm_auto_cloes', [$this, 'tkm_auto_cloes_events']);
     }
 
-    public function tkm_auto_cloes_events()
+    public function tkm_auto_close_events()
     {
-        $active = tkm_settings('cloes_auto_ticket');
-        $preoid = tkm_settings('auto_cloes_days');
+        $active = tkm_settings('close_auto_ticket');
 
-        if (! $active || $preoid) {
-            return NULL;
+        if (! $active) {
+            return;
         }
 
-        global  $wpdb;
+        global $wpdb;
         $ticket_table = $wpdb->prefix . 'tkm_tickets';
 
-        $date = date("Y-m-d H:i:s", strtotime("-" . $preoid . ' days', time()));
+        $date = date("Y-m-d H:i:s", strtotime("-7 days"));
 
-        $tickets =   $wpdb->get_col("SELECT ID FROM " . $ticket_table . " WHERE status != 'cloesd' AND reply_date < '" . $date . "'");
+        $tickets = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT ID FROM {$ticket_table} WHERE status != 'closed' AND reply_date < %s",
+                $date
+            )
+        );
 
-        if (count($tickets)) {
+        if (!empty($tickets) && class_exists('TKM_Ticket_Manager')) {
             $ticket_manager = new TKM_Ticket_Manager();
-
             foreach ($tickets as $ticket_id) {
-
                 $ticket_manager->update_status($ticket_id, 'closed');
             }
         }
     }
-
     public function deactive() {}
 
     public function admin_php_notice()
     { ?>
         <div class="notice notice-error">
-            <p>افزونه تیکت چی برای اجرا صحیح نیاز به نسخه 7.2 به بالا دارد لطفا نسخه php هاست خود را ارتقا دهید
+            <p>افزونه تیکت چی برای اجرا صحیح نیاز به نسخه 7.4 به بالا دارد لطفا نسخه php هاست خود را ارتقا دهید
             </p>
         </div>
 <?php

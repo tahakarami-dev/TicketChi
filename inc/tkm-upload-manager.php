@@ -1,16 +1,19 @@
-<?php 
+<?php
 
 defined('ABSPATH') || exit('NO Access');
 
-class TKM_Upload_File {
+class TKM_Upload_File
+{
 
     public $file;
 
-    public function __construct($file) {
-        $this->file = $file;    
+    public function __construct($file)
+    {
+        $this->file = $file;
     }
 
-    public function upload() {
+    public function upload()
+    {
         add_filter('upload_dir', [$this, 'coustome_upload_dir']);
 
         if (!function_exists('wp_handle_upload')) {
@@ -27,7 +30,8 @@ class TKM_Upload_File {
         }
     }
 
-    public function coustome_upload_dir($args) {
+    public function coustome_upload_dir($args)
+    {
         $year = date("Y", time());
         $month = date("m", time());
         $coustome_dir = '/tkm-uploads' . '/' . $year . '/' . $month;

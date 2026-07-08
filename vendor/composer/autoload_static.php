@@ -8,8 +8,8 @@ class ComposerStaticInit55200452ecca5a5270812103fd51cdbf
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
-        '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
         'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
         'e4e590a9b5afe940db71ee1662c02677' => __DIR__ . '/..' . '/morilog/jalali/src/helpers.php',
@@ -18,15 +18,10 @@ class ComposerStaticInit55200452ecca5a5270812103fd51cdbf
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
-            'Symfony\\Polyfill\\Php83\\' => 23,
+            'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Contracts\\Translation\\' => 30,
             'Symfony\\Component\\Translation\\' => 30,
-            'Symfony\\Component\\Clock\\' => 24,
-        ),
-        'P' => 
-        array (
-            'Psr\\Clock\\' => 10,
         ),
         'M' => 
         array (
@@ -38,7 +33,6 @@ class ComposerStaticInit55200452ecca5a5270812103fd51cdbf
         ),
         'C' => 
         array (
-            'Carbon\\Doctrine\\' => 16,
             'Carbon\\' => 7,
         ),
         'A' => 
@@ -48,9 +42,9 @@ class ComposerStaticInit55200452ecca5a5270812103fd51cdbf
     );
 
     public static $prefixDirsPsr4 = array (
-        'Symfony\\Polyfill\\Php83\\' => 
+        'Symfony\\Polyfill\\Php80\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php83',
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -64,14 +58,6 @@ class ComposerStaticInit55200452ecca5a5270812103fd51cdbf
         array (
             0 => __DIR__ . '/..' . '/symfony/translation',
         ),
-        'Symfony\\Component\\Clock\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/clock',
-        ),
-        'Psr\\Clock\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/clock/src',
-        ),
         'Morilog\\Jalali\\' => 
         array (
             0 => __DIR__ . '/..' . '/morilog/jalali/src',
@@ -79,10 +65,6 @@ class ComposerStaticInit55200452ecca5a5270812103fd51cdbf
         'Kavenegar\\' => 
         array (
             0 => __DIR__ . '/..' . '/kavenegar/php/src',
-        ),
-        'Carbon\\Doctrine\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine',
         ),
         'Carbon\\' => 
         array (
@@ -95,6 +77,7 @@ class ComposerStaticInit55200452ecca5a5270812103fd51cdbf
     );
 
     public static $classMap = array (
+        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'BASE_MENU' => __DIR__ . '/../..' . '/inc/admin/abstract/base-menu.php',
         'CSF' => __DIR__ . '/../..' . '/inc/admin/codestar/classes/setup.class.php',
         'CSF_Abstract' => __DIR__ . '/../..' . '/inc/admin/codestar/classes/abstract.class.php',
@@ -148,17 +131,8 @@ class ComposerStaticInit55200452ecca5a5270812103fd51cdbf
         'CSF_Walker_Nav_Menu_Edit' => __DIR__ . '/../..' . '/inc/admin/codestar/functions/walker.php',
         'CSF_Welcome' => __DIR__ . '/../..' . '/inc/admin/codestar/views/welcome.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
-        'DateException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateException.php',
-        'DateInvalidOperationException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateInvalidOperationException.php',
-        'DateInvalidTimeZoneException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateInvalidTimeZoneException.php',
-        'DateMalformedIntervalStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedIntervalStringException.php',
-        'DateMalformedPeriodStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedPeriodStringException.php',
-        'DateMalformedStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedStringException.php',
-        'DateObjectError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateObjectError.php',
-        'DateRangeError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateRangeError.php',
-        'Override' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/Override.php',
-        'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
+        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'TKM_ASSETS' => __DIR__ . '/../..' . '/inc/tkm-assets.php',
         'TKM_Admin_Ajax' => __DIR__ . '/../..' . '/inc/admin/tkm-admin-ajax.php',
         'TKM_Admin_Department_Manager' => __DIR__ . '/../..' . '/inc/admin/tkm-admin-department-manager.php',
@@ -173,12 +147,16 @@ class ComposerStaticInit55200452ecca5a5270812103fd51cdbf
         'TKM_Reply_Manager' => __DIR__ . '/../..' . '/inc/tkm-reply-manager.php',
         'TKM_SMS' => __DIR__ . '/../..' . '/inc/tkm-sms.php',
         'TKM_SMS_Notification' => __DIR__ . '/../..' . '/inc/tkm_sms-notification.php',
+        'TKM_Shortcode_Router' => __DIR__ . '/../..' . '/inc/front/tkm-shortcode-router.php',
+        'TKM_Shortcode_Url' => __DIR__ . '/../..' . '/inc/front/tkm-shortcode-url.php',
         'TKM_Ticket_List' => __DIR__ . '/../..' . '/inc/admin/tkm-ticket-list.php',
         'TKM_Ticket_Manager' => __DIR__ . '/../..' . '/inc/tkm-ticket-manager.php',
         'TKM_Ticket_Url' => __DIR__ . '/../..' . '/inc/front/tkm-ticket-url.php',
         'TKM_Upload_File' => __DIR__ . '/../..' . '/inc/tkm-upload-manager.php',
         'TKM_Upload_Voice' => __DIR__ . '/../..' . '/inc/upload_voice_manger.php',
         'TKM_WC_Dashboard' => __DIR__ . '/../..' . '/inc/front/tkm-wc-dashboard.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
         'WP_Customize_Control_CSF' => __DIR__ . '/../..' . '/inc/admin/codestar/functions/customize.php',
         'WP_Customize_Panel_CSF' => __DIR__ . '/../..' . '/inc/admin/codestar/functions/customize.php',
         'WP_Customize_Section_CSF' => __DIR__ . '/../..' . '/inc/admin/codestar/functions/customize.php',

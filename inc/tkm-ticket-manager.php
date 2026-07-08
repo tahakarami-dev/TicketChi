@@ -30,7 +30,8 @@ class TKM_Ticket_Manager
             return $errors;
         }
 
-        $this->wpdb->insert( 
+
+        $this->wpdb->insert(
             $this->table,
             [
                 'title' => sanitize_text_field($data['title']),
@@ -43,11 +44,11 @@ class TKM_Ticket_Manager
                 'create_date' => date("Y-m-d H:i:s"),
                 'reply_date' => date("Y-m-d H:i:s"),
                 'file' => $data['file'] ? $data['file'] : NULL,
-                'voice' => $data['voice'] ? $data['voice'] : NULL, // اضافه کردن فیلد و
+                'voice' => $data['voice'] ? $data['voice'] : NULL,
                 'product' => $data['product'] ? $data['product'] : NULL,
-        
+                'edd_product' => isset($data['edd_product']) ? $data['edd_product'] : NULL,
             ],
-            ['%s', '%s', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s','%d'] // اضافه کردن نوع برای ویس
+            ['%s', '%s', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d']
         );
 
         $insert_id = $this->wpdb->insert_id;
@@ -59,119 +60,113 @@ class TKM_Ticket_Manager
         if (!intval($user_id)) {
             return [];
         }
-    
+
         $args = [];
         $conditions = [];
-    
+
         // Type filter
         switch ($type) {
-            case 'send': // تیکت‌هایی که کاربر ایجاد کرده
+            case 'send': 
                 $conditions[] = "creator_id = %d";
                 $args[] = $user_id;
                 break;
-    
-            case 'get': // تیکت‌هایی که ادمین برای کاربر ارسال کرده
+
+            case 'get': 
                 $conditions[] = "user_id = %d AND from_admin = 1";
                 $args[] = $user_id;
                 break;
-    
-            default: // تمامی تیکت‌ها (ارسال شده و دریافت شده)
+
+            default:
                 $conditions[] = "(creator_id = %d OR user_id = %d)";
                 $args[] = $user_id;
                 $args[] = $user_id;
                 break;
         }
-    
+
         // Priority filter
         if ($priority !== NULL && $priority !== 'all-priority') {
             $conditions[] = "priority = %s";
             $args[] = $priority;
         }
-    
+
         // Status filter
         if ($status !== NULL && $status !== 'all') {
             $conditions[] = "status = %s";
             $args[] = $status;
         }
-    
+
         // Order by filter
         switch ($orderby) {
             case 'create-date':
                 $orderby_sql = "ORDER BY create_date DESC";
                 break;
-    
+
             case 'reply-date':
             default:
                 $orderby_sql = "ORDER BY reply_date DESC";
                 break;
         }
-    
+
         // Pagination filter
         $page_sql = "";
         if ($page_num) {
             $per_page = 10;
             $page_sql = "LIMIT %d";
             $args[] = $per_page;
-    
+
             if ($page_num != 1) {
                 $offset = ($page_num - 1) * $per_page;
                 $page_sql .= " OFFSET %d";
                 $args[] = $offset;
             }
         }
-    
+
         // Combine conditions
         $where_sql = implode(' AND ', $conditions);
-    
-        // ساختن کوئری نهایی
+
         $query = "SELECT * FROM " . $this->table;
         if (!empty($where_sql)) {
             $query .= " WHERE " . $where_sql;
         }
         $query .= " " . $orderby_sql . " " . $page_sql;
-    
-        // اجرای کوئری و بازگشت نتایج
+
         return $this->wpdb->get_results($this->wpdb->prepare($query, $args));
     }
-    
+
     public function ticket_count($user_id, $type = NULL, $status = NULL)
-{
-    if (!intval($user_id)) {
-        return 0;
+    {
+        if (!intval($user_id)) {
+            return 0;
+        }
+
+        $args = [];
+        $conditions = [];
+
+        switch ($type) {
+            case 'send':
+                $conditions[] = "creator_id = %d";
+                $args[] = $user_id;
+                break;
+            case 'get':
+                $conditions[] = "user_id = %d AND from_admin = 1";
+                $args[] = $user_id;
+                break;
+            default:
+                $conditions[] = "(user_id = %d OR creator_id = %d)";
+                $args[] = $user_id;
+                $args[] = $user_id;
+                break;
+        }
+
+        if ($status && $status !== 'all') {
+            $conditions[] = "status = %s";
+            $args[] = $status;
+        }
+
+        $sql = "SELECT COUNT(*) FROM " . $this->table . " WHERE " . implode(" AND ", $conditions);
+
+        return $this->wpdb->get_var($this->wpdb->prepare($sql, $args));
     }
-
-    $args = [];
-    $conditions = [];
-
-    // فیلتر نوع
-    switch ($type) {
-        case 'send':
-            $conditions[] = "creator_id = %d";
-            $args[] = $user_id;
-            break;
-        case 'get':
-            $conditions[] = "user_id = %d AND from_admin = 1";
-            $args[] = $user_id;
-            break;
-        default:
-            $conditions[] = "(user_id = %d OR creator_id = %d)";
-            $args[] = $user_id;
-            $args[] = $user_id;
-            break;
-    }
-
-    // فیلتر وضعیت
-    if ($status && $status !== 'all') {
-        $conditions[] = "status = %s";
-        $args[] = $status;
-    }
-
-    // ساخت کوئری
-    $sql = "SELECT COUNT(*) FROM " . $this->table . " WHERE " . implode(" AND ", $conditions);
-
-    // اجرای کوئری
-    return $this->wpdb->get_var($this->wpdb->prepare($sql, $args));
-}
 
 
 
@@ -196,65 +191,69 @@ class TKM_Ticket_Manager
     }
 
 
-    public function get_count_tickets(){
-       return $this->wpdb->get_var("SELECT COUNT(*) FROM " .$this->table);
+    public function get_count_tickets()
+    {
+        return $this->wpdb->get_var("SELECT COUNT(*) FROM " . $this->table);
     }
 
-    public function open_tickets(){
-        return $this->wpdb->get_var("SELECT COUNT(*) FROM " .$this->table. " WHERE status='open' ");
+    public function open_tickets()
+    {
+        return $this->wpdb->get_var("SELECT COUNT(*) FROM " . $this->table . " WHERE status='open' ");
     }
 
-    public function cloesd_tickets(){
-        return $this->wpdb->get_var("SELECT COUNT(*) FROM " .$this->table. " WHERE status='cloesd' ");
+    public function closed_tickets()
+    {
+        return $this->wpdb->get_var("SELECT COUNT(*) FROM " . $this->table . " WHERE status='closed' ");
     }
-    public function answerd_tickets(){
-        return $this->wpdb->get_var("SELECT COUNT(*) FROM " .$this->table. " WHERE status='answerd' ");
+    public function answerd_tickets()
+    {
+        return $this->wpdb->get_var("SELECT COUNT(*) FROM " . $this->table . " WHERE status='answerd' ");
     }
-    public function has_user_rated_ticket($ticket_id) {
+    public function has_user_rated_ticket($ticket_id)
+    {
         if (!is_user_logged_in()) {
-            return false; // کاربر وارد نشده است
+            return false; 
         }
         global $wpdb;
         $table_name = $wpdb->prefix . 'tkm_ratings';
         $user_id = get_current_user_id();
-    
-        // بررسی ثبت امتیاز برای کاربر و تیکت خاص
+
         $rating_exists = $wpdb->get_var($wpdb->prepare(
             "SELECT ID FROM $table_name WHERE ticket_id = %d AND user_id = %d",
-            $ticket_id, $user_id
+            $ticket_id,
+            $user_id
         ));
-    
+
         return !empty($rating_exists);
     }
-    public function get_ticket_rating($ticket_id) {
+    public function get_ticket_rating($ticket_id)
+    {
         if (!is_user_logged_in()) {
-            return 0; // مقدار پیش‌فرض برای کاربران وارد نشده
+            return 0; 
         }
         global $wpdb;
-        $table_name = $wpdb->prefix . 'tkm_ratings'; // نام جدول امتیازات
-        $user_id = get_current_user_id(); // شناسه کاربر فعلی
-    
-        // جستجو در جدول برای مقدار امتیاز
+        $table_name = $wpdb->prefix . 'tkm_ratings'; 
+        $user_id = get_current_user_id(); 
+
         $rating = $wpdb->get_var($wpdb->prepare(
             "SELECT rating FROM $table_name WHERE ticket_id = %d AND user_id = %d",
             $ticket_id,
             $user_id
         ));
-    
-        return $rating ? intval($rating) : 0; // اگر امتیاز پیدا شد، مقدار آن برگردانده می‌شود
+
+        return $rating ? intval($rating) : 0; 
     }
 
-    public function get_user_purchased_products($user_id) {
-        // گرفتن سفارشات کاربر
+    public function get_user_purchased_products($user_id)
+    {
         $customer_orders = wc_get_orders(array(
             'customer_id' => $user_id,
-            'status' => array('wc-completed', 'wc-processing'), // وضعیت‌های خرید
-            'limit' => -1 // تمام سفارشات
+            'status' => array('wc-completed', 'wc-processing'), 
+            'limit' => -1 
         ));
-    
+
         $products = array();
-    
-        // استخراج محصولات از سفارشات
+
         foreach ($customer_orders as $order) {
             foreach ($order->get_items() as $item) {
                 $product_id = $item->get_product_id();
@@ -262,10 +261,7 @@ class TKM_Ticket_Manager
                 $products[$product_id] = $product_name;
             }
         }
-    
+
         return $products;
     }
-    
-
-  
 }

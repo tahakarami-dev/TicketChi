@@ -16,14 +16,9 @@ class TKM_SMS{
     {
         $this->username = tkm_settings('sms-username');
         $this->password = tkm_settings('sms-password');
-        
-
         $this->phone =$phone;
         $this->message=$message;
         $this->code=$code;
         $this->api = tkm_settings('sms-api');
-
-
-        
     }
 }

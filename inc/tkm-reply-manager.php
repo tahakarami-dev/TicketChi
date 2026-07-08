@@ -51,12 +51,13 @@ class TKM_Reply_Manager
         return $this->wpdb->get_results($this->wpdb->prepare("SELECT * FROM " . $this->table . " WHERE ticket_id = %d ORDER BY create_date ASC", $this->ticket_id));
     }
 
-    public function delete_reply($reply_id){
-       return $this->wpdb->delete($this->table , ['ID' => $reply_id, ] ,['%d']);
+    public function delete_reply($reply_id)
+    {
+        return $this->wpdb->delete($this->table, ['ID' => $reply_id,], ['%d']);
     }
 
-    public function delete_replies(){
-       return  $this->wpdb->delete($this->table, ['ticket_id' => $this->ticket_id] ,['%d']);
+    public function delete_replies()
+    {
+        return  $this->wpdb->delete($this->table, ['ticket_id' => $this->ticket_id], ['%d']);
     }
-
 }

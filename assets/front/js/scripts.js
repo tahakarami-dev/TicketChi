@@ -1,5 +1,4 @@
 jQuery(document).ready(function($) { 
-    // عملکرد اکاردئون 
     $(".accordion").click(function() { 
         $(this).next(".accordion-content").slideToggle(); 
     }); 
@@ -11,13 +10,11 @@ jQuery(document).ready(function($) {
         $(".tkm_item_send_form").slideToggle(); 
     }); 
 
-    // تغییر دپارتمان والد 
     $("#tkm-parent-depaertment").change(function(e) { 
         e.preventDefault(); 
         let selectedValue = $(this).val(); 
 
-        // ریست کردن نوع تیکت (دپارتمان فرزند) 
-        $('#tkm-child-department').prop('selectedIndex', 0); // ریست به اولین گزینه 
+        $('#tkm-child-department').prop('selectedIndex', 0); 
         $('.tkm-child-department option').hide(); 
         $('.alert-department').hide(); 
 
@@ -30,7 +27,6 @@ jQuery(document).ready(function($) {
         $('.nf-deparment').hide(); 
     }); 
 
-    // تغییر دپارتمان فرزند 
     $('#tkm-child-department').change(function(e) { 
         e.preventDefault(); 
         let selectedValue = $(this).val(); 
@@ -44,7 +40,6 @@ jQuery(document).ready(function($) {
         } 
     }); 
 
-    // ارسال تیکت 
     $('#tkm-submit-ticket').submit(function(e) { 
         e.preventDefault(); 
 
@@ -63,11 +58,9 @@ jQuery(document).ready(function($) {
         form_data.append('priority', $('#importance').val()); 
         form_data.append('content', $('#ticket-content').val()); 
         form_data.append('file', $('#file-upload').prop('files')[0]);
-        form_data.append('audioData', $('#audioData').val()); // ارسال داده ویس
+        form_data.append('audioData', $('#audioData').val());
         form_data.append('user_purchased_products', $('#products').val()); 
-
-
-
+        form_data.append('edd_purchased_products', $('#edd-products').val()); 
 
         $.ajax({ 
             type: "post", 
@@ -84,7 +77,7 @@ jQuery(document).ready(function($) {
                         icon: "success" 
                     }); 
 
-                    window.location.href = response.result;
+                    location.reload();
 
 
                 } else { 
@@ -116,19 +109,30 @@ jQuery(document).ready(function($) {
         let submit = $this.find('.submit-reply');
         let loader = $this.find('.loader');
     
-        // غیرفعال کردن دکمه ارسال
         submit.prop('disabled', true);
         loader.show();
+
+           let eddProductValue = $('#edd-products').val();
+    if (eddProductValue === '') {
+        Swal.fire({
+            title: "انتخاب محصول",
+            text: "لطفاً یک محصول دیجیتال را از لیست انتخاب کنید.",
+            icon: "warning"
+        });
+        submit.prop('disabled', false);
+        loader.hide();
+        return; 
+    }
     
         let form_data = new FormData();
         form_data.append('action', 'tkm-submit-reply');
         form_data.append('nonce', TKM_DATA_AJAX.nonce);
         form_data.append('status', $('#status').is(':checked') ? $('#status').val() : '');
         form_data.append('ticket_id', $('#ticket_id').val());
-        form_data.append('body', $('#body').val() || ''); // متن
+        form_data.append('body', $('#body').val() || ''); 
         let file = $('#file-upload').prop('files')[0];
-        form_data.append('file', file ? file : null); // فایل فقط اگر وجود داشت
-        form_data.append('audioData', $('#audioData').val() || ''); // ویس فقط اگر وجود داشت
+        form_data.append('file', file ? file : null); 
+        form_data.append('audioData', $('#audioData').val() || ''); 
     
         $.ajax({
             type: "post",
@@ -172,7 +176,6 @@ jQuery(document).ready(function($) {
         });
     });
 
-  // ضبط و ارسال ویس
   let mediaRecorder;
   let audioChunks = [];
   let audioStream;
@@ -180,19 +183,15 @@ jQuery(document).ready(function($) {
   let seconds = 0;
   let isRecording = false;
   
-  // توابع تایمر
-  
-  // شروع تایمر
   function startTimer() {
       seconds = 0;
       clearInterval(timerInterval);
-      $("#timerContainer").show(); // نمایش تایمر
+      $("#timerContainer").show(); 
       timerInterval = setInterval(() => {
           seconds++;
           let minutes = Math.floor(seconds / 60);
           let secs = seconds % 60;
   
-          // فرمت سازی دقیقه و ثانیه برای نمایش دو رقمی
           let formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
           let formattedSecs = secs < 10 ? '0' + secs : secs;
   
@@ -200,26 +199,22 @@ jQuery(document).ready(function($) {
       }, 1000);
   }
   
-  // توقف تایمر
   function stopTimer() {
       clearInterval(timerInterval);
-      $("#timerContainer").hide(); // مخفی کردن تایمر
+      $("#timerContainer").hide(); 
   }
   
-  // بازنشانی تایمر
   function resetTimer() {
       clearInterval(timerInterval);
       seconds = 0;
       $("#timer").text("00:00");
-      $("#timerContainer").hide(); // مخفی کردن تایمر
+      $("#timerContainer").hide(); 
   }
   
-  // باز کردن پاپ‌آپ
   $("#openPopup").on("click", function() {
       $("#popup").fadeIn();
   });
   
-  // بستن پاپ‌آپ
   $("#closePopup").on("click", function() {
       $("#popup").fadeOut();
       if (mediaRecorder && mediaRecorder.state === "recording") {
@@ -229,25 +224,23 @@ jQuery(document).ready(function($) {
       stopTimer();
   });
   
-  // شروع ضبط صدا
   $("#startRecording").on("click", async function() {
       if (!isRecording) {
-          // شروع ضبط
           audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
           mediaRecorder = new MediaRecorder(audioStream, { mimeType: "audio/webm" });
           mediaRecorder.start();
           audioChunks = [];
-          startTimer(); // شروع تایمر
-          $("#startRecording").prop("disabled", true); // غیرفعال کردن دکمه شروع
-          $("#stopRecording").show(); // نمایش دکمه پایان ضبط
-          $("#deleteRecording").hide(); // مخفی کردن دکمه حذف
+          startTimer(); 
+          $("#startRecording").prop("disabled", true); 
+          $("#stopRecording").show(); 
+          $("#deleteRecording").hide(); 
   
           mediaRecorder.ondataavailable = function(event) {
               audioChunks.push(event.data);
           };
   
           mediaRecorder.onstop = function() {
-              stopTimer(); // توقف تایمر
+              stopTimer(); 
               const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
               const reader = new FileReader();
   
@@ -259,36 +252,33 @@ jQuery(document).ready(function($) {
   
               const audioUrl = URL.createObjectURL(audioBlob);
               $("#audioPlayback").attr("src", audioUrl);
-              $("#deleteRecording").show(); // نمایش دکمه حذف
+              $("#deleteRecording").show();
           };
   
           isRecording = true;
       }
   });
   
-  // توقف ضبط صدا
   $("#stopRecording").on("click", function() {
       if (mediaRecorder && isRecording) {
           mediaRecorder.stop();
           audioStream.getTracks().forEach(track => track.stop());
-          $("#startRecording").prop("disabled", false); // فعال کردن دکمه شروع
-          $("#stopRecording").hide(); // مخفی کردن دکمه پایان ضبط
+          $("#startRecording").prop("disabled", false); 
+          $("#stopRecording").hide(); 
           isRecording = false;
       }
   });
   
-  // حذف ضبط
   $("#deleteRecording").on("click", function() {
       $("#audioPlayback").attr("src", "");
       $("#audioData").val("");
       $("#deleteRecording").hide();
-      $("#startRecording").prop("disabled", false); // فعال کردن دکمه شروع
-      $("#stopRecording").hide(); // مخفی کردن دکمه پایان ضبط
-      resetTimer(); // بازنشانی تایمر
+      $("#startRecording").prop("disabled", false); 
+      $("#stopRecording").hide();
+      resetTimer(); 
       isRecording = false;
   });
 
-      // گرفتن مقدار کوئری از URL
       function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
@@ -296,7 +286,6 @@ jQuery(document).ready(function($) {
 
     let selectedRating = 0;
 
-    // ستاره ها را فعال یا غیرفعال می‌کند
     $('.tkm-stars .star').on('click', function () {
         selectedRating = $(this).data('value');
         $('.tkm-stars .star').removeClass('active');
@@ -304,7 +293,6 @@ jQuery(document).ready(function($) {
         $(this).prevAll('.star').addClass('active');
     });
 
-    // ثبت امتیاز
     $('#tkm-submit-rating').on('click', function () {
         if (selectedRating === 0) {
             Swal.fire({ 
@@ -314,10 +302,10 @@ jQuery(document).ready(function($) {
             });            return;
         }
 
-        const ticketID = getQueryParam('ticket-id'); // از URL مقدار را بگیر
+        const ticketID = getQueryParam('ticket-id'); 
 
         $.ajax({
-            url: TKM_DATA_AJAX.ajax_url, // URL وردپرس
+            url: TKM_DATA_AJAX.ajax_url,
             type: 'POST',
             data: {
                 action: 'tkm_submit_rating',
@@ -349,16 +337,12 @@ jQuery(document).ready(function($) {
                 });            }
         });
     });
-        // دریافت امتیاز از data-rating
         var rating = parseInt($('#rating-container').data('rating'), 10);
     
-        // پر کردن ستاره‌ها
         $('#rating-container .star').each(function () {
             var starValue = parseInt($(this).data('value'), 10);
             if (starValue <= rating) {
-                $(this).addClass('filled'); // اضافه کردن کلاس برای ستاره‌های پرشده
+                $(this).addClass('filled'); 
             }
         });
-    
-
 })

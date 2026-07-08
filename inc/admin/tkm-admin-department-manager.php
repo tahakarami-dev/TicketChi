@@ -4,10 +4,8 @@ defined('ABSPATH') || exit('NO Access');
 
 class TKM_Admin_Department_Manager
 {
-
     private $wpdb;
     private $table;
-
     public function __construct()
     {
         global $wpdb;
@@ -22,26 +20,16 @@ class TKM_Admin_Department_Manager
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            // افزودن یا ویرایش دپارتمان
             if (isset($_POST['add_department_nonce']) && wp_verify_nonce($_POST['add_department_nonce'], 'add_department')) {
 
-                // بررسی اگر شناسه دپارتمان وجود دارد یعنی عملیات ویرایش است
                 if (isset($_POST['department_id']) && !empty($_POST['department_id'])) {
                     $department_id = intval($_POST['department_id']);
-                    // اجرای کوئری ویرایش
                     $update = $this->update($department_id, $_POST);
 
                     if ($update) {
-                        // به‌روزرسانی کاربران پاسخگو
                         echo '<div class="alert_message_success">
                         <p class="message_alert">   بروزرسانی دپارتمان با موفقیت انجام شد</p>
                     </div>';
-                        // $answerable_manager->delete($department_id);
-                        // if (!empty($_POST['department-answerabel'])) {
-                        //     foreach ($_POST['department-answerabel'] as $user) {
-                        //         $answerable_manager->insert(['department_id' => $department_id, 'user_id' => $user]);
-                        //     }
-                        // }
                     } else {
                         echo '<div class="alert_message_error">
                         <p class="message_alert">   بروزرسانی دپارتمان با خطا مواجه شد</p>
@@ -52,7 +40,6 @@ class TKM_Admin_Department_Manager
                     <p class="message_alert">   بروزرسانی دپارتمان با خطا مواجه شد</p>
                 </div>';
                 } else {
-                    // اجرای کوئری افزودن جدید
                     $insert = $this->insert_department($_POST);
 
                     if ($insert) {

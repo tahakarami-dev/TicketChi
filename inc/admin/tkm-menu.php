@@ -4,29 +4,20 @@ defined('ABSPATH') || exit('NO Access');
 
 class TKM_MENU extends BASE_MENU
 {
-
-
-
     public $tickets_list = NULL;
     public $from_admin_sms;
-
     private $wpdb;
     private $table;
     private $ticket_id = NULL;
     private $reply_table;
 
-
     public function __construct()
     {
-
         global $wpdb;
         $this->wpdb = $wpdb;
         $this->table = $wpdb->prefix . 'tkm_tickets';
         $this->ticket_id = isset($_GET['id']) ? $_GET['id'] : null;
         $this->reply_table = $wpdb->prefix . 'tkm_replies';
-
-
-
         $this->page_title = 'تیکت چی';
         $this->menu_title = 'تیکت چی';
         $this->menu_slug = 'tkm-settings ';
@@ -54,7 +45,6 @@ class TKM_MENU extends BASE_MENU
                     'status' => false,
 
                 ]
-
             ],
 
             'ticket' => [
@@ -65,9 +55,6 @@ class TKM_MENU extends BASE_MENU
                 'load' => [
                     'status' => true,
                     'callback_option' => 'tickets_screen_option',
-
-
-
                 ]
 
             ],
@@ -79,7 +66,6 @@ class TKM_MENU extends BASE_MENU
                 'load' => [
                     'status' => false,
                 ]
-
             ],
             'my_departments' => [
                 'page_title' => ' تیکت های دپارتمان من  ',
@@ -89,7 +75,6 @@ class TKM_MENU extends BASE_MENU
                 'load' => [
                     'status' => false,
                 ]
-
             ],
             'new-ticket' => [
                 'page_title' => '  ارسال تیکت',
@@ -98,7 +83,6 @@ class TKM_MENU extends BASE_MENU
                 'callback' => 'new_ticket_page',
                 'load' => [
                     'status' => false,
-
                 ],
             ],
             'edit-ticket' => [
@@ -108,20 +92,14 @@ class TKM_MENU extends BASE_MENU
                 'callback' => 'edit_ticket_page',
                 'load' => [
                     'status' => false,
-
                 ],
             ],
-
-
         ];
-
-
         parent::__construct();
     }
 
     public function page()
     {
-
         echo '<h2>تیکت چی </h2>';
     }
 
@@ -133,8 +111,6 @@ class TKM_MENU extends BASE_MENU
     {
         include TKM_VIEWS_PATH . 'admin/analysis/analysis.php';
     }
-    
-
     public function tickets_screen_option()
     {
         // add screen option 
@@ -156,35 +132,22 @@ class TKM_MENU extends BASE_MENU
         $manager = new TKM_Admin_Department_Manager();
         $manager->page();
     }
-    
+
 
     public function new_ticket_page()
     {
         $is_edit = false;
 
         if (isset($_POST['publish'])) {
-            // تأیید نانس
             if (!isset($_POST['ticket_nonce']) || !wp_verify_nonce($_POST['ticket_nonce'], 'ticket_send')) {
                 exit;
             }
-
-            // گرفتن شناسه کاربر جاری
             $current_user = get_current_user_id();
             $data = $_POST;
-
-
-
-
-
-
-            // آرایه‌ای برای ذخیره شناسه تیکت‌ها
             $ticket_ids = [];
 
             $this->create_ticket($current_user, $data);
 
-
-
-            // بررسی درج موفقیت‌آمیز تیکت‌ها
             if (!empty($ticket_ids)) {
                 foreach ($ticket_ids as $id) {
                     echo '<div class="notice notice-success " style="padding: 10px; width:۹۵%">  تیکت با موفقیت ارسال شد.  </div>';
@@ -196,10 +159,8 @@ class TKM_MENU extends BASE_MENU
     public function create_ticket($creator_id, $data)
     {
 
-        // بررسی وجود user-id و اینکه آیا آرایه است یا خیر
         if (!empty($data['user-id']) && is_array($data['user-id']) &&  !empty($data['ticket-title']) &&  !empty($data['tkm-content']) &&  !empty($data['department_id'])) {
             foreach ($data['user-id'] as $user_id) {
-                // درج هر تیکت برای هر کاربر
                 $inserted = $this->wpdb->insert(
                     $this->table,
                     array(
@@ -217,9 +178,6 @@ class TKM_MENU extends BASE_MENU
                     ),
                     array('%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%s', '%s')
                 );
-
-
-
                 if ($inserted) {
                     $ticket_ids[] = $this->wpdb->insert_id;
                     if (isset($data['send-copy'])) {
@@ -240,24 +198,19 @@ class TKM_MENU extends BASE_MENU
         return $from_admin_sms = true;
     }
 
-
     public function edit_ticket_page()
     {
 
         $reply_manager = new TKM_Reply_Manager($this->ticket_id);
 
-        //update ticket
-
         if (isset($_POST['publish'])) {
 
-            // تأیید نانس
             if (!isset($_POST['ticket_nonce']) || !wp_verify_nonce($_POST['ticket_nonce'], 'ticket_send')) {
                 exit('خطا نانس');
             }
 
             $data = $_POST;
 
-            // update info ticket 
             $replies = $reply_manager->get_replys();
             if (count($replies)) {
                 foreach ($replies as $reply) {
@@ -281,27 +234,13 @@ class TKM_MENU extends BASE_MENU
                 }
             }
 
-
-
-
-
-            // گرفتن شناسه کاربر جاری
-
             $data = $_POST;
-
-
-            // آرایه‌ای برای ذخیره شناسه تیکت‌ها
             $ticket_ids = [];
-
             $this->update_ticket($data);
-
             $user_replyed = get_current_user_id();
-
             $insert_reply = 0;
 
             if (isset($data['reply_content']) && !empty($data['reply_content'])) {
-
-
                 $reply_data = [
                     'ticket_id' => $this->ticket_id,
                     'creator_id' => $user_replyed,
@@ -309,21 +248,11 @@ class TKM_MENU extends BASE_MENU
                     'body' => stripslashes_deep($data['reply_content']),
                     'file' => isset($data['file_reply']) ? sanitize_text_field($data['file_reply']) : null
                 ];
-
-
-
-
-
                 $insert_reply =  $this->create_reply($reply_data);
                 if ($insert_reply) {
                     $this->update_reply_date();
                 }
             }
-
-
-
-
-            // بررسی درج موفقیت‌آمیز تیکت‌ها
             if (!empty($ticket_ids)) {
                 foreach ($ticket_ids as $id) {
                     echo '<div class="notice notice-success " style="padding: 10px; width:۹۵%">  تیکت با موفقیت ارسال شد.  </div>';
@@ -341,7 +270,7 @@ class TKM_MENU extends BASE_MENU
         } else {
             echo '<div class="notice notice-error" style="padding: 10px; width:۹۵٪">لطفا ابتدا <a href="admin.php?page=tkm-tickets">تیکت</a> مورد نظر را انتخاب کنید !!!</div>
 ';
-            $reply_manager = null; // یا مدیریت خطای مناسب
+            $reply_manager = null;
         }
 
         include TKM_VIEWS_PATH . 'admin/ticket/new.php';
@@ -372,16 +301,13 @@ class TKM_MENU extends BASE_MENU
     public function update_ticket($data)
     {
 
-        // دریافت creator_id از فرم یا متغیر POST
         $creator_id = isset($data['creator-id']) ? intval($data['creator-id'][0]) : null;
 
-        // بررسی و دریافت شناسه کاربر از فرم
         $user_id = isset($data['user-id']) && is_array($data['user-id']) ? intval($data['user-id'][0]) : null;
 
         if ($user_id &&   !empty($data['ticket-title']) &&  !empty($data['tkm-content']) &&  !empty($user_id) && !empty($creator_id) &&  !empty($data['department_id'])) {
-            // ساخت کوئری آپدیت
             $updated = $this->wpdb->update(
-                $this->table, // نام جدول
+                $this->table, 
                 array(
                     'title' => sanitize_text_field($data['ticket-title']),
                     'body' => stripslashes_deep($data['tkm-content']),
@@ -395,12 +321,11 @@ class TKM_MENU extends BASE_MENU
                     'note' => isset($data['note']) ? sanitize_text_field($data['note']) : null,
                     'create_date' => sanitize_text_field($data['date_ticket'])
                 ),
-                array('ID' => intval($this->ticket_id)), // شرط برای آپدیت تیکت مورد نظر
-                array('%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%s', '%s', '%s'), // نوع داده‌ها
-                array('%d') // نوع داده ID
+                array('ID' => intval($this->ticket_id)),
+                array('%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%s', '%s', '%s'), 
+                array('%d') 
             );
 
-            // بررسی اینکه آیا آپدیت انجام شده یا خیر
             if ($updated !== false) {
                 echo '<div class="notice notice-success " style="padding: 10px; width:۹۵%">  تیکت با موفقیت آپدیت شد  </div>';
             } else {

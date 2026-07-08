@@ -6,22 +6,14 @@ $priority = isset($_REQUEST['priority']) ? $_REQUEST['priority'] : null;
 $creator_id =  isset($_REQUEST['creator_id']) ? $_REQUEST['creator_id'] : null;
 $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
 
-
-
-
 $department_manager = new TKM_Admin_Department_Manager();
 $paernt_departmnet = $department_manager->get_parent_department();
 
 $statuses = tkm_get_status();
-
-
 ?>
-
-
 <div class="wrap ticket-list mb-4">
     <header class="head-page">
         <h1 class="title_page_tickets">تیکت ها </h1>
-
         <a href="?page=tkm-new-ticket" class="page-title-action btn_add_new_tickets" style="margin-right: 5px;">ارسال تیکت جدید</a>
         <?php if ($search): ?>
             <span class="search_result" style="margin-right: 10px; font-size:16px;">نتایج جستجو <strong><?php echo $search ?></strong></span>
@@ -32,8 +24,6 @@ $statuses = tkm_get_status();
         <?php
         $ticket_manager = new TKM_Ticket_Manager();
         $tickets_counts = $ticket_manager->get_count_tickets();
-
-
         ?>
         <li style="margin-left:10px; "><a class="all_tickets" href="admin.php?page=tkm-tickets"> همه </a><strong class="num-tickets"> (<?php echo  $tickets_counts ?>)</strong></li>
         <?php foreach ($statuses as $status): ?>
@@ -42,9 +32,7 @@ $statuses = tkm_get_status();
 " href="admin.php?page=tkm-tickets&status=<?php echo $status['slug'] ?>"><?php echo   esc_html($status['name'])  ?></a>
             </li>
         <?php endforeach; ?>
-
     </ul>
-
     <div class="">
         <form class="container_filter" method="get">
             <input type="hidden" name="page" value="<?php echo $page ?>">
@@ -60,10 +48,8 @@ $statuses = tkm_get_status();
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </optgroup>
-
                     <?php endif; ?>
                 <?php endforeach; ?>
-
             </select>
 
             <select id="filter2 filter_ticket main_filter" name="priority">
@@ -75,7 +61,7 @@ $statuses = tkm_get_status();
             </select>
 
             <select class="user_search" id="ticket-creator" name="creator_id">
-            <option value="" selected>  کاربر ایجاد کننده </option>
+                <option value="" selected> کاربر ایجاد کننده </option>
 
                 <?php if ($creator_id) {
                     $user_data = get_userdata($creator_id);

@@ -16,12 +16,10 @@ class TKM_Front_AJAX
 
     public function submit_ticket()
     {
-        // بررسی نانس
         if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'tkm_ajax_nonce')) {
             $this->make_response(['success' => false, 'result' => 'درخواست نامعتبر است.']);
         }
 
-        // آپلود فایل
         $file = isset($_FILES['file']) ? $_FILES['file'] : null;
         $upload_result = null;
 
@@ -37,41 +35,34 @@ class TKM_Front_AJAX
         $user_id = get_current_user_id();
         $ticket_data = [];
 
-        // تنظیم داده‌های تیکت
         $ticket_data['title'] = !empty($_POST['title_ticket']) ? sanitize_text_field($_POST['title_ticket']) : 'بدون عنوان';
         $ticket_data['body'] = wp_kses_post($_POST['content']);
         $ticket_data['creator_id'] = $user_id;
         $ticket_data['status'] = 'open';
         $ticket_data['priority'] = sanitize_text_field($_POST['priority']);
         $ticket_data['product'] = sanitize_text_field($_POST['user_purchased_products']);
+        $ticket_data['edd_product'] = sanitize_text_field($_POST['edd_purchased_products']);
         $ticket_data['department_id'] = sanitize_text_field($_POST['child-department']);
 
-        // افزودن فایل به داده‌های تیکت در صورت وجود
         if ($upload_result && isset($upload_result['url'])) {
             $ticket_data['file'] = esc_url($upload_result['url']);
         }
-        // افزودن ویس به تیکت
         $voice_data = isset($_POST['audioData']) ? $_POST['audioData'] : null;
         $voice_upload_result = null;
 
-        // لاگ‌گذاری برای بررسی داده‌های ویس
 
         if ($voice_data) {
-            // ساخت شی از کلاس آپلود ویس
             $voice_uploader = new TKM_Upload_Voice($voice_data);
-            // آپلود ویس
             $voice_upload_result = $voice_uploader->upload();
 
             if (!$voice_upload_result['success']) {
                 $this->make_response(['success' => false, 'result' => $voice_upload_result['message']]);
             }
         }
-        // افزودن ویس به داده‌های تیکت
         if ($voice_upload_result && isset($voice_upload_result['url'])) {
             $ticket_data['voice'] = esc_url($voice_upload_result['url']);
         }
 
-        // ایجاد تیکت
         $ticket_manager = new TKM_Ticket_Manager();
         $ticket = $ticket_manager->insert($ticket_data);
 
@@ -118,7 +109,6 @@ class TKM_Front_AJAX
         $status = !empty($_POST['status']) ? $_POST['status'] : 'open';
         $ticket_manager->update_status($ticket_id, $status);
 
-        // آپلود فایل
         if (isset($_FILES['file'])) {
             $uploader = new TKM_Upload_File($_FILES['file']);
             $upload_result = $uploader->upload();
@@ -127,7 +117,6 @@ class TKM_Front_AJAX
             }
         }
 
-        // آپلود ویس
         if (!empty($_POST['audioData'])) {
             $voice_uploader = new TKM_Upload_Voice($_POST['audioData']);
             $voice_upload_result = $voice_uploader->upload();
@@ -136,7 +125,6 @@ class TKM_Front_AJAX
             }
         }
 
-        // درج پاسخ
         $reply_manager = new TKM_Reply_Manager($ticket_id);
         $insert = $reply_manager->insert_reply($data_reply);
 
@@ -152,32 +140,31 @@ class TKM_Front_AJAX
             $this->make_response(['success' => false, 'result' => $insert]);
         }
     }
-    public function submit_rating() {
-        // اعتبارسنجی ورودی‌ها
+    public function submit_rating()
+    {
         if (!isset($_POST['rating'], $_POST['ticket_id'])) {
             wp_send_json_error(['message' => 'ورودی‌ها نامعتبر است.']);
             return;
         }
-    
+
         global $wpdb;
-        $table_name = $wpdb->prefix . 'tkm_ratings'; // جدول شما
-    
+        $table_name = $wpdb->prefix . 'tkm_ratings'; 
+
         $user_id = get_current_user_id();
         $ticket_id = intval($_POST['ticket_id']);
         $rating = intval($_POST['rating']);
-    
-        // بررسی وجود امتیاز قبلی برای کاربر
+
         $existing = $wpdb->get_var($wpdb->prepare(
             "SELECT ID FROM $table_name WHERE ticket_id = %d AND user_id = %d",
-            $ticket_id, $user_id
+            $ticket_id,
+            $user_id
         ));
-    
+
         if ($existing) {
             wp_send_json_error(['message' => 'شما قبلا برای این تیکت امتیاز داده‌اید.']);
             return;
         }
-    
-        // درج امتیاز در جدول
+
         $result = $wpdb->insert(
             $table_name,
             [
@@ -187,7 +174,7 @@ class TKM_Front_AJAX
             ],
             ['%d', '%d', '%d']
         );
-    
+
         if ($result) {
             wp_send_json_success(['message' => 'امتیاز با موفقیت ثبت شد.']);
         } else {

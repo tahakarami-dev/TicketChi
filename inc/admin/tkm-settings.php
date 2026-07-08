@@ -13,24 +13,17 @@ function tkm_user_meta_key()
 
   return $array;
 
-  // دریافت کد CSS از گزینه ذخیره‌شده در Codestar Framework
-  $custom_css = tkm_settings('css_costume'); // نام گزینه ذخیره‌شده را تغییر دهید
+  $custom_css = tkm_settings('css_costume');
 
 
-  // مسیر فایل CSS که می‌خواهید ایجاد کنید
   $file = TKM_FRONT_ASSETS . 'css/custom-user-style.css';
-  // ذخیره کد CSS در فایل custom-style.css
   file_put_contents($file, $custom_css);
 }
 
-// Control core classes for avoid errors
 if (class_exists('CSF')) {
 
-  //
-  // Set a unique slug-like ID
   $prefix = 'tkm_settings';
 
-  //
   // Create options
   CSF::createOptions($prefix, array(
     'menu_title' => 'تیکت چی',
@@ -66,16 +59,11 @@ if (class_exists('CSF')) {
         'dependency' => array('new-ticket-alert', '==', 'true')
       ),
       array(
-        'id'      => 'cloes_auto_ticket',
+        'id'      => 'close_auto_ticket',
         'type'    => 'switcher',
         'title'   => 'فعال سازی',
-        'label'   => 'بستن خودکار تیکت ها  ',
+        'label'   => 'بستن خودکار تیکت ها به صورت هفتگی ',
         'default' => false
-      ),
-      array(
-        'id'    => 'auto_cloes_days',
-        'type'  => 'text',
-        'title' => ' مدت زمان بستن تیکت (روز)'
       ),
       array(
         'id'      => 'rating_ticket',
@@ -97,129 +85,119 @@ if (class_exists('CSF')) {
     )
   ));
 
-  CSF::createSection( $prefix, array(
+  CSF::createSection($prefix, array(
     'title'  => 'استایل',
     'id'     => 'tkm_style',
     'fields' => array(
-        array(
-            'id'      => 'primary_color',
-            'type'    => 'color',
-            'title'   => 'رنگ اصلی',
-            'default' => '#2A48CD',
-      'output'=>array(
-          'background-color'=>'.new-ticket-btn, #tkm-filter-btn,.btn-eye,.btn_show_tickets,.custom-file-upload,.tkm-submit-ticket,.byn_send_reply,.submit-reply,.file_upload_reply,.btn_send_voice',
+      array(
+        'id'      => 'primary_color',
+        'type'    => 'color',
+        'title'   => 'رنگ اصلی',
+        'default' => '#2A48CD',
+        'output' => array(
+          'background-color' => '.new-ticket-btn ,.accordion, #popup,.attachment-file, #tkm-filter-btn,.btn-eye,.btn_show_tickets,.custom-file-upload,.tkm-submit-ticket,.byn_send_reply,.submit-reply,.file_upload_reply,.btn_send_voice',
+          'border-color' => '.ticket:hover , .divider hr',
+          'color' => '.link_file_ticket'
         ),
-        'output_important'=> true,
+        'output_important' => true,
 
-  
-        ),
-        array(
-            'id'      => 'secondary_color',
-            'type'    => 'color',
-            'title'   => 'رنگ ثانویه',
-            'default' => '#2947cc8a',
 
-            'output'=>array(
-              'background-color'=>'new-ticket-btn:hover, #tkm-filter-btn:hover, .btn-eye:hover, .btn_show_tickets:hover, .custom-file-upload:hover, .tkm-submit-ticket:hover, .byn_send_reply:hover, .submit-reply:hover, .file_upload_reply:hover, .btn_send_voice:hover,.divider hr',
-               'border-color'=>'.response-item-chat,.item-reply-ticket,.response-item-chat,.divider hr',
-               'color'=>'.link-title:hover,.back_link:hover'
-            ),
-            'output_important'=> true,
-    
-      
-        ),
-        array(
-            'id'      => 'background_color',
-            'type'    => 'color',
-            'title'   => 'پس زمینه',
-            'default' => '#d3eef2',
+      ),
+      array(
+        'id'      => 'secondary_color',
+        'type'    => 'color',
+        'title'   => 'رنگ ثانویه',
+        'default' => '#2947cc8a',
 
-            'output'=>array(
-              'background-color'=>'.file_box,.tkm_left_single,.items_reply,.items_reply:hover',
-            ),
-            'output_important'=> true,
+        'output' => array(
+          'background-color' => 'new-ticket-btn:hover,.body_faq, #tkm-filter-btn:hover, .btn-eye:hover,.new-ticket-btn:hover ,.btn_show_tickets:hover, .custom-file-upload:hover, .tkm-submit-ticket:hover, .byn_send_reply:hover, .submit-reply:hover, .file_upload_reply:hover, .btn_send_voice:hover,.divider hr',
+          'border-color' => '.response-item-chat,.item-reply-ticket,.response-item-chat,',
+          'color' => '.link-title:hover,.back_link:hover'
         ),
-        array(
-            'id'      => 'text_color',
-            'type'    => 'color',
-            'title'   => 'رنگ متن',
-            'default' => '#ffffff',
+        'output_important' => true,
+      ),
+      array(
+        'id'      => 'text_color',
+        'type'    => 'color',
+        'title'   => 'رنگ متن',
+        'default' => '#ffffff',
 
-            'output'=>array(
-              'color'=>'.new-ticket-btn, #tkm-filter-btn,.btn-eye,.btn_show_tickets,.custom-file-upload,.tkm-submit-ticket,.byn_send_reply,.submit-reply,.file_upload_reply,.btn_send_voice,new-ticket-btn:hover, #tkm-filter-btn:hover, .btn-eye:hover, .btn_show_tickets:hover, .custom-file-upload:hover, .tkm-submit-ticket:hover, .byn_send_reply:hover, .submit-reply:hover, .file_upload_reply:hover, .btn_send_voice:hover',
-            ),
-            'output_important'=> true,
+        'output' => array(
+          'color' => '.new-ticket-btn,.accordion,.body_faq ,.attachment-file,#tkm-filter-btn,.btn-eye,.btn_show_tickets,.custom-file-upload,.tkm-submit-ticket,.byn_send_reply,.submit-reply,.file_upload_reply,.btn_send_voice,new-ticket-btn:hover, #tkm-filter-btn:hover, .btn-eye:hover, .btn_show_tickets:hover, .custom-file-upload:hover, .tkm-submit-ticket:hover, .byn_send_reply:hover, .submit-reply:hover, .file_upload_reply:hover, .btn_send_voice:hover',
         ),
+        'output_important' => true,
+      ),
     )
-));
+  ));
 
   CSF::createSection($prefix, array(
     'title'  => 'فیلدها',
     'fields' => array(
 
-        array(
-            'id'      => 'title_dashboard',
-            'type'    => 'text',
-            'title'   => 'عنوان داشبورد',
-            'default' => 'داشبورد تیکت‌ها',
-        ),
+      array(
+        'id'      => 'title_dashboard',
+        'type'    => 'text',
+        'title'   => 'عنوان داشبورد',
+        'default' => 'داشبورد تیکت‌ها',
+      ),
 
-        array(
-            'id'      => 'description_dashboard',
-            'type'    => 'text',
-            'title'   => 'توضیحات داشبورد',
-            'default' => 'مشاهده، ویرایش و مدیریت تیکت‌های دریافت شده و ارسال شده',
-        ),
-        array(
-          'id'      => 'department_label',
-          'type'    => 'text',
-          'title'   => 'فیلد دپارتمان',
-          'default' => 'دپارتمان',
+      array(
+        'id'      => 'description_dashboard',
+        'type'    => 'text',
+        'title'   => 'توضیحات داشبورد',
+        'default' => 'مدیریت تیکت‌های پشتیبانی شما',
+      ),
+      array(
+        'id'      => 'department_label',
+        'type'    => 'text',
+        'title'   => 'فیلد دپارتمان',
+        'default' => 'دپارتمان',
       ),
       array(
         'id'      => 'type_label',
         'type'    => 'text',
         'title'   => 'فیلد نوع تیکت',
         'default' => 'نوع تیکت',
-    ),
-    array(
-      'id'      => 'title_label',
-      'type'    => 'text',
-      'title'   => 'فیلد عنوان تیکت',
-      'default' => ' عنوان تیکت',
-  ),
-  array(
-    'id'      => 'product_label',
-    'type'    => 'text',
-    'title'   => 'فیلد محصول  ',
-    'default' => ' محصول ',
-),
-array(
-  'id'      => 'priority_label',
-  'type'    => 'text',
-  'title'   => 'فیلد اهمیت تیکت  ',
-  'default' => ' اهمیت تیکت ',
-),
-array(
-  'id'      => 'dec_label',
-  'type'    => 'text',
-  'title'   => 'فیلد  توضیحات  ',
-  'default' => '  توضیحات ',
-),
-array(
-  'id'      => 'file_label',
-  'type'    => 'text',
-  'title'   => 'فیلد  آپلود فایل   ',
-  'default' => '  آپلود فایل  ',
-),array(
-  'id'      => 'voice_label',
-  'type'    => 'text',
-  'title'   => 'فیلد  ارسال پیام صوتی   ',
-  'default' => '  ارسال صدا  ',
-),
+      ),
+      array(
+        'id'      => 'title_label',
+        'type'    => 'text',
+        'title'   => 'فیلد عنوان تیکت',
+        'default' => ' عنوان تیکت',
+      ),
+      array(
+        'id'      => 'product_label',
+        'type'    => 'text',
+        'title'   => 'فیلد محصول  ',
+        'default' => ' محصول ',
+      ),
+      array(
+        'id'      => 'priority_label',
+        'type'    => 'text',
+        'title'   => 'فیلد اهمیت تیکت  ',
+        'default' => ' اهمیت تیکت ',
+      ),
+      array(
+        'id'      => 'dec_label',
+        'type'    => 'text',
+        'title'   => 'فیلد  توضیحات  ',
+        'default' => '  توضیحات ',
+      ),
+      array(
+        'id'      => 'file_label',
+        'type'    => 'text',
+        'title'   => 'فیلد  آپلود فایل   ',
+        'default' => '  آپلود فایل  ',
+      ),
+      array(
+        'id'      => 'voice_label',
+        'type'    => 'text',
+        'title'   => 'فیلد  ارسال پیام صوتی   ',
+        'default' => '  ارسال صدا  ',
+      ),
 
     ),
-));
+  ));
 
   CSF::createSection($prefix, array(
     'title'  => 'پاسخ های آماده',
@@ -297,7 +275,7 @@ array(
         'default' => '#4bcc58'
       ),
       array(
-        'id'      => 'cloes-color',
+        'id'      => 'close-color',
         'type'    => 'color',
         'title'   => 'رنگ وضعیت پاسخ داده شده',
         'label'   => 'رنگ نمایش وضعیت ',
@@ -457,125 +435,71 @@ array(
 
       ),
 
-
     )
-
-
-
-
   ));
 
-
-  // CSF::createSection($prefix, array(
-  //   'title' => 'ایمیل',
-  //   'id' => 'email_section'
-
-
-
-  // ));
-
-  // CSF::createSection($prefix, array(
-  //   'parent' => 'email_section',
-  //   'title'  => 'تنظیمات ایمیل',
-  //   'fields' => array(
-
-  //     // add field
-  //     array(
-  //       'id'    => 'email-from',
-  //       'type'  => 'text',
-  //       'title' => '  ایمیل ارسال کننده',
-  //     ),
-  //     array(
-  //       'id'    => 'email-sender',
-  //       'type'  => 'text',
-  //       'title' => '  نام ارسال کننده',
-  //     ),
-
-  //   )
-  // ));
-
-  // CSF::createSection($prefix, array(
-  //   'parent' => 'email_section',
-  //   'title' => 'ارسال ایمیل',
-  //   'id' => 'sms_section',
-  //   'fields' => array(
-
-
-
-  //     array(
-  //       'id'      => 'user_create_email',
-  //       'type'    => 'switcher',
-  //       'title'   => 'فعال سازی',
-  //       'label'   => ' ارسال ایمیل هنگام ایجاد تیکت',
-  //       'default' => false
-  //     ),
-
-  //     array(
-  //       'id'      => 'pattern_email',
-  //       'type'    => 'wp_editor',
-  //       'title'   => 'متن ایمیل',
-  //       'default' => false
-  //     ),
-  //     array(
-  //       'id'      => 'user_create_pattern',
-  //       'type'    => 'content',
-  //       'content' => '<p>شناسه تیکت : {{ticket_id}}</p>' .
-  //         '<p>عنوان تیکت : {{title}}</p>' .
-  //         '<p>دپارتمان تیکت : {{department}}</p>' .
-  //         '<p> وضعیت تیکت : {{status}}</p>' .
-  //         '<p>اهمیت تیکت : {{priority}}</p>' .
-  //         '<p>تاریخ تیکت : {{date}}</p>',
-
-
-  //     ),
-
-
-  //   )
-
-
-
-
-  // ));
-
   CSF::createSection($prefix, array(
-    'title'  => 'ووکامرس',
+    'title'  => 'فروشگاه',
     'fields' => array(
       array(
         'id'      => 'product_setting',
         'type'    => 'switcher',
-        'title'   => ' پشیبانی محصولات ووکامرس ',
+        'title'   => ' پشتیبانی محصولات ووکامرس ',
         'label'   => '  آیا می‌خواهید کاربر برای محصولات ووکامرس خریداری شده تیکت ثبت نماید  ',
         'default' => false
       ),
-
-
-
+      array(
+        'id'      => 'edd_setting',
+        'type'    => 'switcher',
+        'title'   => ' پشتیبانی محصولات  Easy Digital Download ',
+        'label'   => '  آیا می‌خواهید کاربر برای محصولات Easy Digital Download خریداری شده تیکت ثبت نماید  ',
+        'default' => false
+      ),
     )
   ));
 
   CSF::createSection($prefix, array(
-    'title'  => 'پاسخ هوشمند ',
+    'title'  => 'پاسخ خودکار ',
     'fields' => array(
 
       // add field
       array(
         'id'      => 'auto_reply',
         'type'    => 'switcher',
-        'title'   => ' پاسخ هوشمند ',
+        'title'   => ' پاسخ خودکار ',
         'label'   => 'این پاسخ بعد از ثبت تیکت توسط کاربر نمایش داده میشود ',
         'default' => false
       ),
       array(
         'id'      => 'auto_reply_text',
         'type'    => 'textarea',
-        'title'   => ' متن پاسخ هوشمند ',
-        'placeholder'   => ' این متن در پاسخ هوشمند نمایش داده خواهد شد ',
+        'title'   => ' متن پاسخ خودکار ',
+        'placeholder'   => ' این متن در پاسخ خودکار نمایش داده خواهد شد ',
         'dependency' => array('auto_reply', '==', 'true')
 
       ),
-   
-      
+    )
+  ));
 
+  CSF::createSection($prefix, array(
+    'title'  => 'شورت کد',
+    'fields' => array(
+
+      // add field
+      array(
+        'id'      => 'shortcode',
+        'type'    => 'switcher',
+        'title'   => 'شورت کد',
+        'label'   => 'با فعال سازی قابلیت شورت کد، امکان استفاده از آن در صفحات دلخواه شما فراهم می‌شود',
+        'default' => false
+      ),
+      array(
+        'id'      => 'shortcode_info',
+        'type'    => 'content',
+        'content' => '<h3>شورت کد در دسترس: <span style="color:#2a48cd">[tickets]</span></h3>
+        <p>برای نمایش لیست تیکت‌ها در هر کجای سایت، این کد را در ویرایشگر متن یا HTML صفحه مورد نظرتان قرار دهید.</p>
+'
+      ),
     )
   ));
 }
